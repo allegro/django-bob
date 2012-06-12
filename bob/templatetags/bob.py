@@ -13,8 +13,10 @@ def bob_icon(name, is_white=False):
 
 
 @register.inclusion_tag('bob/main_menu.html')
-def main_menu(items, selected, title=None):
+def main_menu(items, selected, title=None, search=None):
     return {
         'items': items,
         'selected': selected,
+        'title': title,
+        'search': search,
     }

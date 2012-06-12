@@ -2,28 +2,22 @@
     {% if title %}<a href="/" class="brand">{{ title }}</a>{% endif %}
     <ul class="nav">
         {% for item in items %}
-        {%  if item.item_kind == 'separator' %}
-        <li class="divider-vertical"></li>
-        {%  elif item.item_kind == 'link' %}
-        <li class="main-menu-{{ item.name|slugify }}
-            {% if selected=item.name %}active{% endif %}
-            {% if item.kwargs.pull_right %}pull-right{% endif %}">
-            <a href="{{ item.get_href }}">
-                {% if item.kwargs.fugue_icon %}
-                    <i class="{{ item.kargs.fugue_icon }}"></i>
-                {% elif item.kwargs.icon %}
-                    <i class="icon-{{ item.kwargs.icon }} icon-white"></i>
-                {% endif %}
-                {{ item.label }}
-            </a>
-        </li>
-        {%  endif %}
+        {%   if not item.kwargs.pull_right %}
+        {%     include 'bob/menu_item.html' with item=item selected=selected %}
+        {%   endif %}
         {% endfor %}
     </ul>
     {% if search %}
-    <form class="navbar-search pull-right" action="{{ search }}">
-        <input class="search-query" placeholder="Search" name="q">
-    </form>
+        <form class="navbar-search pull-right" action="{{ search }}">
+            <input class="search-query" placeholder="Search" name="q">
+        </form>
     {% endif %}
+    <ul class="nav pull-right">
+        {% for item in items %}
+        {%   if item.kwargs.pull_right %}
+        {%     include 'bob/menu_item.html' with item=item selected=selected %}
+        {%   endif %}
+        {% endfor %}
+    </ul>
 </div></div></div>
 
