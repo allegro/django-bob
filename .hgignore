@@ -1,0 +1,12 @@
+syntax: glob
+
+.*
+*~
+*.pyc
+*.pyo
+*.swp
+build/
+bin/
+lib/
+include/
+
