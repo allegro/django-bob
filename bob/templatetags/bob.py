@@ -20,3 +20,10 @@ def main_menu(items, selected, title=None, search=None):
         'title': title,
         'search': search,
     }
+
+@register.inclusion_tag('bob/tab_menu.html')
+def tab_menu(items, selected):
+    return {
+        'items': items,
+        'selected': selected,
+    }
