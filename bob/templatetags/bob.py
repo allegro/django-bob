@@ -27,3 +27,10 @@ def tab_menu(items, selected):
         'items': items,
         'selected': selected,
     }
+
+@register.inclusion_tag('bob/sidebar_menu.html')
+def sidebar_menu(items, selected):
+    return {
+        'items': items,
+        'selected': selected,
+    }

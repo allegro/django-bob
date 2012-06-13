@@ -1,0 +1,7 @@
+<div class="well side-nav">
+<ul class="nav nav-list">
+    {% for item in items %}
+    {%   include 'bob/menu_item.html' with item=item selected=selected %}
+    {% endfor %}
+</ul>
+</div>
