@@ -37,7 +37,7 @@ def sidebar_menu(items, selected):
 
 @register.inclusion_tag('bob/pagination.html')
 def pagination(page, show_all=False, show_csv=False,
-                fugue_icons=False, url_query=None):
+                fugue_icons=False, url_query=None, neighbors=1):
     if not page:
         return {
             'show_all': show_all,
@@ -47,8 +47,8 @@ def pagination(page, show_all=False, show_csv=False,
         }
     paginator = page.paginator
     page_no = page.number
-    pages = paginator.page_range[max(0, page_no - 2):
-                                 min(paginator.num_pages, page_no + 1)]
+    pages = paginator.page_range[max(0, page_no - 1 - neighbors):
+                                 min(paginator.num_pages, page_no + neighbors)]
     if 1 not in pages:
         pages.insert(0, 1)
         pages.insert(1, '...')
