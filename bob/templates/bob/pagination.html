@@ -1,0 +1,74 @@
+{% load bob %}
+
+<div class="pagination pagination-centered">
+{% if page.has_other_pages %}
+<ul>
+    {% if page.has_previous %}
+    <li><a href="?{{ url_query|bob_page:page.previous_page_number }}"><i
+        {% if fugue_icons %}
+        class="fugue-icon fugue-blue-document-page-previous"
+        {% else %}
+        class="icon-arrow-left"
+        {% endif %}
+        ></i></a></li>
+    {% else %}
+    <li class="disable"><a href="#"><i
+        {% if fugue_icons %}
+        class="fugue-icon fugue-document-page-previous"
+        {% else %}
+        class="icon-arrow-left"
+        {% endif %}
+    ></i></a></li>
+    {% endif %}
+    {% for p in pages %}
+    {%  if p == '...' %}
+    <li class="disabled"><a href="#">&hellip;</a></li>
+    {%  else %}
+    <li
+    {%   if p == page.number %}
+        class="active"
+    {%   endif %}
+    ><a href="?{{ url_query|bob_page:p }}">{{ p }}</a></li>
+    {%  endif %}
+    {% endfor %}
+    {% if page.has_next %}
+    <li><a href="?{{ url_query|bob_page:page.next_page_number }}"><i
+        {% if fugue_icons %}
+        class="fugue-icon fugue-blue-document-page-next"
+        {% else %}
+        class="icon-arrow-right"
+        {% endif %}
+        ></i></a></li>
+    {% else %}
+    <li class="disabled" ><a href="#"><i
+        {% if fugue_icons %}
+        class="fugue-icon fugue-document-page-next"
+        {% else %}
+        class="icon-arrow-right"
+        {% endif %}
+        ></i></a></li>
+    {% endif %}
+</ul>
+{% endif %}
+<ul>
+    {% if show_all and page %}
+    <li><a href="?{{ url_query|bob_page:0 }}" rel="tooltip"
+           title="Show all items on a single page"><i
+        {% if fugue_icons %}
+        class="fugue-icon fugue-blue-documents-stack"
+        {% else %}
+        class="icon-list-alt"
+        {% endif %}
+        ></i> {{ page.paginator.count }} items</a></li>
+    {% endif %}
+    {% if show_csv %}
+    <li><a href="?{{ url_query|bob_export:'csv' }}" rel="tooltip"
+           title="Export as CSV"><i
+        {% if fugue_icons %}
+        class="fugue-icon fugue-blue-document-excel-csv"
+        {% else %}
+        class="icon-download"
+        {% endif %}
+        ></i> CSV</a></li>
+    {% endif %}
+</ul></div>

@@ -34,3 +34,62 @@ def sidebar_menu(items, selected):
         'items': items,
         'selected': selected,
     }
+
+@register.inclusion_tag('bob/pagination.html')
+def pagination(page, show_all=False, show_csv=False,
+                fugue_icons=False, url_query=None):
+    if not page:
+        return {
+            'show_all': show_all,
+            'show_csv': show_csv,
+            'fugue_icons': fugue_icons,
+            'url_query': url_query,
+        }
+    paginator = page.paginator
+    page_no = page.number
+    pages = paginator.page_range[max(0, page_no - 2):
+                                 min(paginator.num_pages, page_no + 1)]
+    if 1 not in pages:
+        pages.insert(0, 1)
+        pages.insert(1, '...')
+    if paginator.num_pages not in pages:
+        pages.append('...')
+        pages.append(paginator.num_pages)
+    return {
+        'paginator': paginator,
+        'page_no': page_no,
+        'page': page,
+        'pages': pages,
+        'show_all': show_all,
+        'show_csv': show_csv,
+        'fugue_icons': fugue_icons,
+        'url_query': url_query,
+    }
+
+@register.filter
+def bob_page(query, page):
+    if not query:
+        return 'page=%s' % page
+    query = query.copy()
+    if page is not None and page not in ('1', 1):
+        query['page'] = page
+    else:
+        try:
+            del query['page']
+        except KeyError:
+            pass
+    return query.urlencode()
+
+@register.filter
+def bob_export(query, export):
+    if not query:
+        return 'export=%s' % export
+    query = query.copy()
+    if export:
+        query['export'] = export
+    else:
+        try:
+            del query['export']
+        except KeyError:
+            pass
+    return query.urlencode()
