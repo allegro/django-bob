@@ -11,7 +11,7 @@ that make it easier to use the Twitter's Bootstrap framework with Django.
     license='BSD',
     url='https://bitbucket.org/thesheep/bob/',
     keywords='bootstrap django css html',
-    packages=['bob'],
+    packages=['bob', 'bob.templatetags'],
     install_requires=['distribute'],
     platforms='any',
     include_package_data=True,

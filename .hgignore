@@ -9,5 +9,7 @@ build/
 bin/
 lib/
 include/
+dist/
+build/
 *.egg-info/
 

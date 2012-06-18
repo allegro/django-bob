@@ -1,12 +1,14 @@
 {%  if item.item_kind == 'separator' %}
 <li class="divider-vertical"></li>
 {%  elif item.item_kind == 'link' %}
-<li class="{{ class_prefix|default:'menu-item' }}-{{ item.name|slugify }}
-    {% if item.name == selected %}active{% endif %}">
+<li class="
+    {{ class_prefix|default:'menu-item' }}-{{ item.name|slugify }}
+    {% if item.name == selected %}active{% endif %}
+">
     <a href="{{ item.get_href }}">
         {% for i in item.kwargs.indent %}&nbsp;&nbsp;&nbsp;&nbsp;{% endfor %}
         {% if item.kwargs.fugue_icon %}
-            <i class="fugue-icon {{ item.kwargs.fugue_icon }}"></i>
+        <i class="fugue-icon {{ item.kwargs.fugue_icon }}"></i>
         {% elif item.kwargs.icon %}
             <i class="icon-{{ item.kwargs.icon }} icon-white"></i>
         {% endif %}
