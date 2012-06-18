@@ -7,7 +7,7 @@ setup(
 Bob is a library of templates, template tags, helper functions and form widgets
 that make it easier to use the Twitter's Bootstrap framework with Django.
     """,
-    version='1.0.0dev',
+    version='1.0.1dev',
     license='BSD',
     url='https://bitbucket.org/thesheep/bob/',
     keywords='bootstrap django css html',
