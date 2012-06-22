@@ -2,6 +2,8 @@ from django import template
 from django.utils.safestring import mark_safe
 from django.utils.html import conditional_escape as esc
 
+from django.utils.timesince import timesince
+import datetime
 
 register = template.Library()
 
@@ -93,3 +95,18 @@ def bob_export(query, export):
         except KeyError:
             pass
     return query.urlencode()
+
+
+@register.filter
+def timesince_limited(d):
+    ''' Improved timesince '''
+    interval = datetime.datetime.now() - d
+    delta = datetime.timedelta
+    if  interval < delta(days=1):
+        if  interval < delta(days=0,hours=1):
+            return timesince(d) + ' ago '
+        else:
+            return d.strftime('%H:%M')
+    else:
+        return d
+
