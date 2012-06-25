@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(
-    name='bob',
+    name='django-bob',
     description='A set of helper tags and templates for using bootstrap in django.',
     long_description="""
 Bob is a library of templates, template tags, helper functions and form widgets
