@@ -99,11 +99,14 @@ def bob_export(query, export):
 
 @register.filter
 def timesince_limited(d):
-    ''' Improved timesince '''
+    """
+    Display time between given date and now in a human-readable form if the
+    time span is less than a day, otherwise display the date normally.
+    """
     interval = datetime.datetime.now() - d
     delta = datetime.timedelta
-    if  interval < delta(days=1):
-        if  interval < delta(days=0,hours=1):
+    if interval < delta(days=1):
+        if interval < delta(days=0, hours=1):
             return timesince(d) + ' ago '
         else:
             return d.strftime('%H:%M')
