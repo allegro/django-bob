@@ -10,12 +10,16 @@ register = template.Library()
 
 @register.simple_tag
 def bob_icon(name, is_white=False):
+    """Display a bootstrap icon."""
+
     white = ' icon-white' if is_white else ''
     return mark_safe('<i class="icon-%s%s"></i>' % esc(name, white))
 
 
 @register.inclusion_tag('bob/main_menu.html')
 def main_menu(items, selected, title=None, search=None):
+    """Show main menu bar."""
+
     return {
         'items': items,
         'selected': selected,
@@ -25,6 +29,8 @@ def main_menu(items, selected, title=None, search=None):
 
 @register.inclusion_tag('bob/tab_menu.html')
 def tab_menu(items, selected):
+    """Show a menu in form of tabs."""
+
     return {
         'items': items,
         'selected': selected,
@@ -32,6 +38,8 @@ def tab_menu(items, selected):
 
 @register.inclusion_tag('bob/sidebar_menu.html')
 def sidebar_menu(items, selected):
+    """Show menu in a sidebar."""
+
     return {
         'items': items,
         'selected': selected,
@@ -40,6 +48,8 @@ def sidebar_menu(items, selected):
 @register.inclusion_tag('bob/pagination.html')
 def pagination(page, show_all=False, show_csv=False,
                 fugue_icons=False, url_query=None, neighbors=1):
+    """Display pagination for a list of items."""
+
     if not page:
         return {
             'show_all': show_all,
@@ -70,6 +80,8 @@ def pagination(page, show_all=False, show_csv=False,
 
 @register.filter
 def bob_page(query, page):
+    """Modify the query string of an URL to change the ``page`` argument."""
+
     if not query:
         return 'page=%s' % page
     query = query.copy()
@@ -84,6 +96,8 @@ def bob_page(query, page):
 
 @register.filter
 def bob_export(query, export):
+    """Modify the query string of an URL to change the ``export`` argument."""
+
     if not query:
         return 'export=%s' % export
     query = query.copy()
