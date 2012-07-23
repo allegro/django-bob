@@ -11,7 +11,7 @@
         {% for i in item.kwargs.indent %}&nbsp;&nbsp;&nbsp;&nbsp;{% endfor %}
         {% if item.subitems and item.kwargs.collapsible %}
         <b href="#"
-            class="fugue-icon fugue-toggle-small-expand menu-expand"
+            class="fugue-icon menu-expand {% if item.kwargs.collapsed %}fugue-toggle-small-expand{% else %}fugue-toggle-small{% endif %}"
             data-toggle="collapse"
             data-target="#subitems-{{ item.name|slugify }}"
             onclick="$(this).toggleClass('fugue-toggle-small-expand fugue-toggle-small'); return false"
