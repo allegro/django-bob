@@ -7,7 +7,10 @@ class MenuItem(object):
 
     def __init__(self, label, name=None, subitems=None, **kwargs):
         self.label = label
-        self.name = name or label.lower()
+        if name is None:
+            self.name = label.lower()
+        else:
+            self.name = name
         self.subitems = subitems
         self.kwargs = kwargs
 
