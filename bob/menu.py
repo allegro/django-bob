@@ -5,9 +5,10 @@ class MenuItem(object):
 
     item_kind = 'link'
 
-    def __init__(self, label, name=None, **kwargs):
+    def __init__(self, label, name=None, subitems=None, **kwargs):
         self.label = label
         self.name = name or label.lower()
+        self.subitems = subitems
         self.kwargs = kwargs
 
     def get_href(self):

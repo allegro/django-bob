@@ -45,6 +45,15 @@ def sidebar_menu(items, selected):
         'selected': selected,
     }
 
+@register.inclusion_tag('bob/sidebar_menu_subitems.html')
+def sidebar_menu_subitems(item, selected):
+    """Show subitems of a menu in a sidebar."""
+
+    return {
+        'item': item,
+        'selected': selected,
+    }
+
 @register.inclusion_tag('bob/pagination.html')
 def pagination(page, show_all=False, show_csv=False,
                 fugue_icons=False, url_query=None, neighbors=1):
