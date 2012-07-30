@@ -1,0 +1,7 @@
+<ul class="nav nav-list subitems {% if item.kwargs.collapsible %}collapse{% endif %} {% if not item.kwargs.collapsed %}in{% endif %}"
+    id="subitems-{{ item.name|slugify }}"
+>
+    {% for subitem in item.subitems %}
+    {%   include 'bob/menu_item.html' with item=subitem selected=selected %}
+    {% endfor %}
+</ul>
