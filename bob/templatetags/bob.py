@@ -28,12 +28,13 @@ def main_menu(items, selected, title=None, search=None):
     }
 
 @register.inclusion_tag('bob/tab_menu.html')
-def tab_menu(items, selected):
+def tab_menu(items, selected, side=None):
     """Show a menu in form of tabs."""
 
     return {
         'items': items,
         'selected': selected,
+        'side': side,
     }
 
 @register.inclusion_tag('bob/sidebar_menu.html')
