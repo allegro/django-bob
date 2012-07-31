@@ -10,7 +10,12 @@ register = template.Library()
 
 @register.simple_tag
 def bob_icon(name, is_white=False):
-    """Display a bootstrap icon."""
+    """
+    Display a bootstrap icon.
+
+    :param name: The name of the icon to display.
+    :param is_white: Whether the icon should be white (for dark background).
+    """
 
     white = ' icon-white' if is_white else ''
     return mark_safe('<i class="icon-%s%s"></i>' % esc(name, white))
@@ -18,7 +23,14 @@ def bob_icon(name, is_white=False):
 
 @register.inclusion_tag('bob/main_menu.html')
 def main_menu(items, selected, title=None, search=None):
-    """Show main menu bar."""
+    """
+    Show main menu bar.
+
+    :param items: The list of :class:`bob.menu.MenuItem` instances to show.
+    :param selected: The :data:`name` of the currently selected item.
+    :param title: The title to show in the menu bar.
+    :param search: The URL for the search form.
+    """
 
     return {
         'items': items,
@@ -29,7 +41,14 @@ def main_menu(items, selected, title=None, search=None):
 
 @register.inclusion_tag('bob/tab_menu.html')
 def tab_menu(items, selected, side=None):
-    """Show a menu in form of tabs."""
+    """
+    Show a menu in form of tabs.
+
+    :param items: The list of :class:`bob.menu.MenuItem` instances to show.
+    :param selected: The :data:`name` of the currently selected item.
+    :param side: The direction of tabs, may be on of ``"left"``, ``"right"``,
+        ``"top"`` or ``"bottom"``. Defaults to ``"top"``.
+    """
 
     return {
         'items': items,
@@ -39,7 +58,12 @@ def tab_menu(items, selected, side=None):
 
 @register.inclusion_tag('bob/sidebar_menu.html')
 def sidebar_menu(items, selected):
-    """Show menu in a sidebar."""
+    """
+    Show menu in a sidebar.
+
+    :param items: The list of :class:`bob.menu.MenuItem` instances to show.
+    :param selected: The :data:`name` of the currently selected item.
+    """
 
     return {
         'items': items,
@@ -48,7 +72,9 @@ def sidebar_menu(items, selected):
 
 @register.inclusion_tag('bob/sidebar_menu_subitems.html')
 def sidebar_menu_subitems(item, selected):
-    """Show subitems of a menu in a sidebar."""
+    """
+    Show subitems of a menu in a sidebar.
+    """
 
     return {
         'item': item,
@@ -58,7 +84,16 @@ def sidebar_menu_subitems(item, selected):
 @register.inclusion_tag('bob/pagination.html')
 def pagination(page, show_all=False, show_csv=False,
                 fugue_icons=False, url_query=None, neighbors=1):
-    """Display pagination for a list of items."""
+    """
+    Display pagination for a list of items.
+
+    :param page: Django's paginator page to display.
+    :param show_all: Whether to show a link for disabling pagination.
+    :param show_csv: Whether to show a link to CSV download.
+    :param fugue_icons: Whether to use Fugue icons or Bootstrap icons.
+    :param url_query: The query parameters to add to all page links.
+    :param neighbors: How many neighboring pages to show in paginator.
+    """
 
     if not page:
         return {
@@ -126,6 +161,8 @@ def timesince_limited(d):
     """
     Display time between given date and now in a human-readable form if the
     time span is less than a day, otherwise display the date normally.
+
+    :param d: The date to display.
     """
     interval = datetime.datetime.now() - d
     delta = datetime.timedelta
