@@ -18,6 +18,9 @@ groups of related items -- depending on the kind of the menu used.
 .. autoclass:: Separator
     :members:
 
+.. autoclass:: MenuHeader
+    :members:
+
 The menu tags
 -------------
 

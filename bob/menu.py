@@ -47,7 +47,22 @@ class MenuItem(object):
             return reverse(view_name, args=view_args, kwargs=view_kwargs)
         return ''
 
+
 class Separator(object):
     """Show a separator in menus."""
 
     item_kind = 'separator'
+
+
+class MenuHeader(object):
+    """
+    Show a header in menus.
+
+    :param label: The text to display in the header.
+    """
+
+    item_kind = 'header'
+
+    def __init__(self, label):
+        self.label = label
+

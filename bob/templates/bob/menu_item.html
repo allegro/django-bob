@@ -2,6 +2,8 @@
 
 {%  if item.item_kind == 'separator' %}
 <li class="divider-vertical"></li>
+{%  if item.item_kind == 'header' %}
+<li class="nav-header">{{ item.label }}</li>
 {%  elif item.item_kind == 'link' %}
 <li class="
     {{ class_prefix|default:'menu-item' }}-{{ item.name|slugify }}
