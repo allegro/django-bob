@@ -22,7 +22,8 @@ def bob_icon(name, is_white=False):
 
 
 @register.inclusion_tag('bob/main_menu.html')
-def main_menu(items, selected, title=None, search=None):
+def main_menu(items, selected, title=None, search=None, white=False,
+              position=''):
     """
     Show main menu bar.
 
@@ -30,6 +31,8 @@ def main_menu(items, selected, title=None, search=None):
     :param selected: The :data:`name` of the currently selected item.
     :param title: The title to show in the menu bar.
     :param search: The URL for the search form.
+    :param white: If True, the menu bar will be white.
+    :param position: Empty, or one of ``'fixed'``, ``'static'``, ``'bottom'``.
     """
 
     return {
@@ -37,6 +40,8 @@ def main_menu(items, selected, title=None, search=None):
         'selected': selected,
         'title': title,
         'search': search,
+        'position': position,
+        'white': bool(white),
     }
 
 @register.inclusion_tag('bob/tab_menu.html')
