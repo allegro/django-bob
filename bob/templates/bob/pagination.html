@@ -20,7 +20,7 @@
             {% endif %}
             ></i></a></li>
         {% endif %}
-        {% for p in url_pages %}
+        {% for url, p in url_pages %}
         {%  if p == '...' %}
         <li class="disabled"><a href="#">&hellip;</a></li>
         {%  else %}
@@ -28,7 +28,7 @@
         {%   if p == page.number %}
         class="active"
         {%   endif %}
-        ><a href="?{{ p.1 }}">{{ p.0 }}</a></li>
+        ><a href="?{{ url }}">{{ p }}</a></li>
         {%  endif %}
         {% endfor %}
         {% if page.has_next %}
