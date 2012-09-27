@@ -112,12 +112,20 @@ def pagination(page, show_all=False, show_csv=False,
     page_no = page.number
     pages = paginator.page_range[max(0, page_no - 1 - neighbors):
     min(paginator.num_pages, page_no + neighbors)]
+
     if 1 not in pages:
         pages.insert(0, 1)
         pages.insert(1, '...')
     if paginator.num_pages not in pages:
         pages.append('...')
         pages.append(paginator.num_pages)
+    urls = []
+    for item in pages:
+        if item == '...':
+            urls.append(changed_url(url_query, query_variable_name, page_no))
+        else:
+            urls.append(changed_url(url_query, query_variable_name, item))
+    url_pages = zip(pages, urls)
     return {
         'paginator': paginator,
         'page_no': page_no,
@@ -127,10 +135,24 @@ def pagination(page, show_all=False, show_csv=False,
         'show_csv': show_csv,
         'fugue_icons': fugue_icons,
         'url_query': url_query,
-        'url_previous_page': page_no - 1,
-        'url_next_page': page_no + 1,
-        'url_value': query_variable_name,
-        }
+        'url_previous_page': changed_url(url_query, query_variable_name, page_no-1),
+        'url_next_page': changed_url(url_query, query_variable_name, page_no+1),
+        'url_pages': url_pages,
+        'url_all': changed_url(url_query, query_variable_name, 0)
+    }
+
+def changed_url(query, name, value):
+    if not query:
+        return '%s=%s' % (name, value)
+    query = query.copy()
+    if name is not None and name not in ('1', 1):
+        query[name] = value
+    else:
+        try:
+            del query['page']
+        except KeyError:
+            pass
+    return query.urlencode()
 
 @register.filter
 def bob_export(query, export):

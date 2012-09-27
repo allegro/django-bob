@@ -4,7 +4,7 @@
     {% if page.has_other_pages %}
     <ul>
         {% if page.has_previous %}
-        <li><a href="?{{ url_value }}={{ url_previous_page }}"><i
+        <li><a href="?{{ url_previous_page }}"><i
             {% if fugue_icons %}
             class="fugue-icon fugue-blue-document-page-previous"
             {% else %}
@@ -20,7 +20,7 @@
             {% endif %}
             ></i></a></li>
         {% endif %}
-        {% for p in pages %}
+        {% for p in url_pages %}
         {%  if p == '...' %}
         <li class="disabled"><a href="#">&hellip;</a></li>
         {%  else %}
@@ -28,11 +28,11 @@
         {%   if p == page.number %}
         class="active"
         {%   endif %}
-        ><a href="?{{ url_value }}={{ p }}">{{ p }}</a></li>
+        ><a href="?{{ p.1 }}">{{ p.0 }}</a></li>
         {%  endif %}
         {% endfor %}
         {% if page.has_next %}
-        <li><a href="?{{ url_value }}={{ url_next_page }}"><i
+        <li><a href="?{{ url_next_page }}"><i
             {% if fugue_icons %}
             class="fugue-icon fugue-blue-document-page-next"
             {% else %}
@@ -52,7 +52,7 @@
     {% endif %}
     <ul>
         {% if show_all and page %}
-        <li><a href="?{{ url_value }}=0" rel="tooltip"
+        <li><a href="?{{ url_all }}" rel="tooltip"
                title="Show all items on a single page"><i
             {% if fugue_icons %}
             class="fugue-icon fugue-blue-documents-stack"
