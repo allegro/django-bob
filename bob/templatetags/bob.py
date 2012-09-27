@@ -145,11 +145,11 @@ def changed_url(query, name, value):
     if not query:
         return '%s=%s' % (name, value)
     query = query.copy()
-    if name is not None and name not in ('1', 1):
+    if value is not None and value not in ('1', 1):
         query[name] = value
     else:
         try:
-            del query['page']
+            del query[name]
         except KeyError:
             pass
     return query.urlencode()
