@@ -42,7 +42,7 @@ def main_menu(items, selected, title=None, search=None, white=False,
         'search': search,
         'position': position,
         'white': bool(white),
-    }
+        }
 
 @register.inclusion_tag('bob/tab_menu.html')
 def tab_menu(items, selected, side=None):
@@ -59,7 +59,7 @@ def tab_menu(items, selected, side=None):
         'items': items,
         'selected': selected,
         'side': side,
-    }
+        }
 
 @register.inclusion_tag('bob/sidebar_menu.html')
 def sidebar_menu(items, selected):
@@ -73,7 +73,7 @@ def sidebar_menu(items, selected):
     return {
         'items': items,
         'selected': selected,
-    }
+        }
 
 @register.inclusion_tag('bob/sidebar_menu_subitems.html')
 def sidebar_menu_subitems(item, selected):
@@ -84,12 +84,12 @@ def sidebar_menu_subitems(item, selected):
     return {
         'item': item,
         'selected': selected,
-    }
+        }
 
 @register.inclusion_tag('bob/pagination.html')
 def pagination(page, show_all=False, show_csv=False,
-                fugue_icons=False, url_query=None, neighbors=1,
-                query_variable_name='page'):
+               fugue_icons=False, url_query=None, neighbors=1,
+               query_variable_name='page'):
     """
     Display pagination for a list of items.
 
@@ -107,11 +107,11 @@ def pagination(page, show_all=False, show_csv=False,
             'show_csv': show_csv,
             'fugue_icons': fugue_icons,
             'url_query': url_query,
-        }
+            }
     paginator = page.paginator
     page_no = page.number
     pages = paginator.page_range[max(0, page_no - 1 - neighbors):
-                                 min(paginator.num_pages, page_no + neighbors)]
+    min(paginator.num_pages, page_no + neighbors)]
     if 1 not in pages:
         pages.insert(0, 1)
         pages.insert(1, '...')
@@ -127,44 +127,10 @@ def pagination(page, show_all=False, show_csv=False,
         'show_csv': show_csv,
         'fugue_icons': fugue_icons,
         'url_query': url_query,
-        'url_previous_page': changed_url(query_variable_name,
-            page.previous_page_number),
-        'url_next_page': changed_url(query_variable_name,
-            page.next_page_number),
-#        'p': changed_url(url_query, query_variable_name, page.p),
-        'first_page': changed_url(query_variable_name, 0),
-
-    }
-
-def changed_url(name, value):
-    return '%s=%s' % (name, value)
-#    if not query:
-#        return '%s=%s' % (name, value)
-    query = query.copy()
-    #    if page is not None and page not in ('1', 1):
-    #        query['page'] = page
-    #    else:
-    #        try:
-    #            del query['page']
-    #        except KeyError:
-    #            pass
-#    return query.urlencode()
-
-#@register.filter
-#def bob_page(query, page):
-#    """Modify the query string of an URL to change the ``page`` argument."""
-#
-#    if not query:
-#        return 'page=%s' % page
-#    query = query.copy()
-#    if page is not None and page not in ('1', 1):
-#        query['page'] = page
-#    else:
-#        try:
-#            del query['page']
-#        except KeyError:
-#            pass
-#    return query.urlencode()
+        'url_previous_page': page_no - 1,
+        'url_next_page': page_no + 1,
+        'url_value': query_variable_name,
+        }
 
 @register.filter
 def bob_export(query, export):
@@ -200,4 +166,3 @@ def timesince_limited(d):
             return d.strftime('%H:%M')
     else:
         return d
-
