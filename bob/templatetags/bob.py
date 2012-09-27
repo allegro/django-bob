@@ -88,7 +88,8 @@ def sidebar_menu_subitems(item, selected):
 
 @register.inclusion_tag('bob/pagination.html')
 def pagination(page, show_all=False, show_csv=False,
-                fugue_icons=False, url_query=None, neighbors=1):
+                fugue_icons=False, url_query=None, neighbors=1,
+                query_variable_name='page'):
     """
     Display pagination for a list of items.
 
@@ -126,23 +127,44 @@ def pagination(page, show_all=False, show_csv=False,
         'show_csv': show_csv,
         'fugue_icons': fugue_icons,
         'url_query': url_query,
+        'url_previous_page': changed_url(query_variable_name,
+            page.previous_page_number),
+        'url_next_page': changed_url(query_variable_name,
+            page.next_page_number),
+#        'p': changed_url(url_query, query_variable_name, page.p),
+        'first_page': changed_url(query_variable_name, 0),
+
     }
 
-@register.filter
-def bob_page(query, page):
-    """Modify the query string of an URL to change the ``page`` argument."""
-
-    if not query:
-        return 'page=%s' % page
+def changed_url(name, value):
+    return '%s=%s' % (name, value)
+#    if not query:
+#        return '%s=%s' % (name, value)
     query = query.copy()
-    if page is not None and page not in ('1', 1):
-        query['page'] = page
-    else:
-        try:
-            del query['page']
-        except KeyError:
-            pass
-    return query.urlencode()
+    #    if page is not None and page not in ('1', 1):
+    #        query['page'] = page
+    #    else:
+    #        try:
+    #            del query['page']
+    #        except KeyError:
+    #            pass
+#    return query.urlencode()
+
+#@register.filter
+#def bob_page(query, page):
+#    """Modify the query string of an URL to change the ``page`` argument."""
+#
+#    if not query:
+#        return 'page=%s' % page
+#    query = query.copy()
+#    if page is not None and page not in ('1', 1):
+#        query['page'] = page
+#    else:
+#        try:
+#            del query['page']
+#        except KeyError:
+#            pass
+#    return query.urlencode()
 
 @register.filter
 def bob_export(query, export):

@@ -4,7 +4,7 @@
 {% if page.has_other_pages %}
 <ul>
     {% if page.has_previous %}
-    <li><a href="?{{ url_query|bob_page:page.previous_page_number }}"><i
+    <li><a href="?{{ page.previous_page_number }}"><i
         {% if fugue_icons %}
         class="fugue-icon fugue-blue-document-page-previous"
         {% else %}
@@ -28,11 +28,11 @@
     {%   if p == page.number %}
         class="active"
     {%   endif %}
-    ><a href="?{{ url_query|bob_page:p }}">{{ p }}</a></li>
+    ><a href="?{{ p }}">{{ p }}</a></li>
     {%  endif %}
     {% endfor %}
     {% if page.has_next %}
-    <li><a href="?{{ url_query|bob_page:page.next_page_number }}"><i
+    <li><a href="?{{ next_page_number }}"><i
         {% if fugue_icons %}
         class="fugue-icon fugue-blue-document-page-next"
         {% else %}
@@ -52,7 +52,7 @@
 {% endif %}
 <ul>
     {% if show_all and page %}
-    <li><a href="?{{ url_query|bob_page:0 }}" rel="tooltip"
+    <li><a href="?{{ first_page }}" rel="tooltip"
            title="Show all items on a single page"><i
         {% if fugue_icons %}
         class="fugue-icon fugue-blue-documents-stack"
