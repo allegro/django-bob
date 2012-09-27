@@ -20,7 +20,7 @@
             {% endif %}
             ></i></a></li>
         {% endif %}
-        {% for url, p in url_pages %}
+        {% for p, url in url_pages %}
         {%  if p == '...' %}
         <li class="disabled"><a href="#">&hellip;</a></li>
         {%  else %}
