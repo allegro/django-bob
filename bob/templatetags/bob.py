@@ -179,9 +179,10 @@ def timesince_limited(d):
 
     :param d: The date to display.
     """
-    interval = datetime.datetime.now() - d
+    today = datetime.datetime.now()
     delta = datetime.timedelta
-    if interval < delta(days=1):
+    interval = today - d
+    if today.strftime('%Y-%m-%d') == d.strftime('%Y-%m-%d'):
         if interval < delta(days=0, hours=1):
             return timesince(d) + ' ago '
         else:
