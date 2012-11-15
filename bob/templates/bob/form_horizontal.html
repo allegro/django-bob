@@ -1,0 +1,38 @@
+<form
+    class="form form-horizontal"
+    method="{{ method.upper }}"
+    action="{{ action }}">
+{% if method.upper == "POST" %}
+{%   csrf_token %}
+{% endif %}
+{% for f in form %}
+<div class="control-group{% if f.errors %} error{% endif %}">
+    <label class="control-label" for="{{f.name}}">{{ f.label }}</label>
+    <div class="controls">
+        {{ f }}
+        {% if f.errors %}
+        <span class="help-block">
+            {% for e in f.errors %}{{ e }}{% endfor %}
+        </span>
+        {% else %}
+        {%   if f.help_text %}
+        <span class="help-block">
+            {{ f.help_text }}
+        </span>
+        {%   endif %}
+        {% endif %}
+    </div>
+</div>
+{% endfor %}
+<div class="form-actions">
+    {% spaceless %}
+    <button type="submit" class="btn btn-primary"><i
+        {% if fugue_icons %}
+        class="fugue-icon fugue-check"
+        {% else %}
+        class="icon-ok"
+        {% endif %}
+    ></i>&nbsp;Save</button>
+    {% endspaceless %}
+</div>
+</form>
