@@ -191,8 +191,9 @@ def timesince_limited(d):
         return d
 
 
-@register.inclusion_tag('bob/form_horizontal.html')
-def form_horizontal(form, action, method='POST', fugue_icons=False):
+@register.inclusion_tag('bob/form.html')
+def form(form, action="", method='POST', fugue_icons=False,
+                    css_class="form-horizontal"):
     """
     Render a horizontal form.
 
@@ -200,11 +201,13 @@ def form_horizontal(form, action, method='POST', fugue_icons=False):
     :param action: The submit URL.
     :param method: The submit method, either ``"GET"`` or ``"POST"``.
     :param fugue_icons: Whether to use Fugue or Bootstrap icon.
+    :param css_class: The CSS class to use for the ``<form>`` tag.
     """
     return {
         'form': form,
         'action': action,
         'method': method,
-        'fugue_icons': fugue_icons,
+        'fugueicons': fugue_icons,
+        'css_class': css_class,
     }
 
