@@ -214,3 +214,19 @@ def form(form, action="", method='POST', fugue_icons=False,
 @register.inclusion_tag('bob/form.html')
 def form_horizontal(*args, **kwargs):
     return form(*args, **kwargs)
+
+
+@register.inclusion_tag('bob/table_header.html')
+def table_header(columns=None, url_query=None, sort=None):
+    """
+    Render a table header with sorted column options
+
+    :param columns: List objects of data_table.DataTableColumn
+    :param url_query: The query parameters to link display table with sorting
+    :param sort: Actual sort column
+    """
+    return {
+        'columns': columns,
+        'sort': sort,
+        'url_query': url_query,
+    }

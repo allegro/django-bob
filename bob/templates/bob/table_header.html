@@ -1,0 +1,53 @@
+{% load url from future %}
+{% load icons %}
+{% load query %}
+{% if columns %}
+<thead><tr>
+{% for column in columns %}
+    {% if column.bob_tag %}
+        {% if column.field %}
+            <th class="column-head-{{ column.field }}">
+                {% if sort == column.field %}
+                <a href="?{{ url_query|query_sort_desc:column.field }}"
+                   class="fugue-icon fugue-sort-{{ column.type|default:'alphabet' }}"></a>
+                {% else %}
+                {%  if sort|cut:'-' == column.field %}
+                <a href="?{{ url_query|query_sort:column.field }}"
+                   class="fugue-icon fugue-sort-{{ column.type|default:'alphabet' }}-descending"></a>
+                {% else %}
+                <a href="?{{ url_query|query_sort:column.field }}" class="fugue-icon fugue-sort"></a>
+                {%  endif %}
+                {% endif %}
+                {{ column.header_name }}
+            </th>
+        {% elif column.selectable %}
+            <th>
+                <div class="dropdown">
+                    <a href="#" data-toggle="dropdown" class="dropdown-toggle">
+                        <i class="fugue-icon fugue-ui-check-boxes-series"></i>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#" class="select-all">
+                            <i class="fugue-icon fugue-ui-check-box">
+                            </i>Select all on this page</a>
+                        </li>
+                        <li>
+                            <a href="#" class="select-toggle">
+                                <i class="fugue-icon fugue-ui-check-box-mix">
+                                </i>Reverse selection</a>
+                        </li>
+                        <li>
+                            <a href="#" class="select-none">
+                                <i class="fugue-icon fugue-ui-check-box-uncheck"></i>Deselect all
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </th>
+        {% else %}
+            <th>{{ column.header_name }}</th>
+        {% endif %}
+    {% endif %}
+{% endfor %}
+<thead><tr>
+{% endif %}
