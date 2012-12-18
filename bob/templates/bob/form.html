@@ -1,7 +1,6 @@
 <form
-    class="form {{ css_class }}"
+    class="form {{css_class}}"
     method="{{ method.upper }}"
-    enctype="multipart/form-data"
     action="{{ action }}">
 {% if method.upper == "POST" %}
 {%   csrf_token %}
@@ -28,12 +27,12 @@
 <div class="form-actions">
     {% spaceless %}
     <button type="submit" class="btn btn-primary"><i
-        {% if fugueicons %}
-        class="fugue-icon fugue-tick"
+        {% if fugue_icons %}
+        class="fugue-icon fugue-check"
         {% else %}
-        class="icon-ok icon-white"
+        class="icon-ok"
         {% endif %}
-    ></i>&nbsp;Save</button>
+        ></i>&nbsp;{{submit_label}}</button>
     {% endspaceless %}
 </div>
 </form>

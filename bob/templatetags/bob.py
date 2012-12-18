@@ -22,7 +22,7 @@ def bob_icon(name, is_white=False):
 
 
 @register.inclusion_tag('bob/main_menu.html')
-def main_menu(items, selected, title=None, search=None, white=False,
+def main_menu(items, selected, title="", search=None, white=False,
               position=''):
     """
     Show main menu bar.
@@ -44,6 +44,7 @@ def main_menu(items, selected, title=None, search=None, white=False,
         'white': bool(white),
         }
 
+
 @register.inclusion_tag('bob/tab_menu.html')
 def tab_menu(items, selected, side=None):
     """
@@ -61,6 +62,7 @@ def tab_menu(items, selected, side=None):
         'side': side,
         }
 
+
 @register.inclusion_tag('bob/sidebar_menu.html')
 def sidebar_menu(items, selected):
     """
@@ -75,6 +77,7 @@ def sidebar_menu(items, selected):
         'selected': selected,
         }
 
+
 @register.inclusion_tag('bob/sidebar_menu_subitems.html')
 def sidebar_menu_subitems(item, selected):
     """
@@ -85,6 +88,7 @@ def sidebar_menu_subitems(item, selected):
         'item': item,
         'selected': selected,
         }
+
 
 @register.inclusion_tag('bob/pagination.html')
 def pagination(page, show_all=False, show_csv=False,
@@ -141,6 +145,7 @@ def pagination(page, show_all=False, show_csv=False,
         'url_all': changed_url(url_query, query_variable_name, 0)
     }
 
+
 def changed_url(query, name, value):
     if not query:
         return '%s=%s' % (name, value)
@@ -153,6 +158,7 @@ def changed_url(query, name, value):
         except KeyError:
             pass
     return query.urlencode()
+
 
 @register.filter
 def bob_export(query, export):
@@ -192,41 +198,86 @@ def timesince_limited(d):
 
 
 @register.inclusion_tag('bob/form.html')
-def form(form, action="", method='POST', fugue_icons=False,
-                    css_class="form-horizontal"):
+def form(form, action, method="POST", title=None, css_class="",
+         fugue_icons=False, submit_label='Save'):
     """
-    Render a horizontal form.
+    Render a form.
 
     :param form: The form to render.
     :param action: The submit URL.
     :param method: The submit method, either ``"GET"`` or ``"POST"``.
     :param fugue_icons: Whether to use Fugue or Bootstrap icon.
-    :param css_class: The CSS class to use for the ``<form>`` tag.
+    :param title: Form title.
+    :param css_class: Additional css class for ``form`` tag.
     """
     return {
         'form': form,
         'action': action,
+        'title': title,
         'method': method,
-        'fugueicons': fugue_icons,
         'css_class': css_class,
+        'fugue_icons': fugue_icons,
+        'submit_label': submit_label,
     }
-
-@register.inclusion_tag('bob/form.html')
-def form_horizontal(*args, **kwargs):
-    return form(*args, **kwargs)
 
 
 @register.inclusion_tag('bob/table_header.html')
-def table_header(columns=None, url_query=None, sort=None):
+def table_header(columns=None, url_query=None, sort=None, fugue_icons=False):
     """
     Render a table header with sorted column options
 
-    :param columns: List objects of data_table.DataTableColumn
-    :param url_query: The query parameters to link display table with sorting
-    :param sort: Actual sort column
+    :param columns: a list of objects of
+    type :py:class:bob.data_table.DataTableColumn
+    :param url_query: The query parameters to add to all page links
+    :param sort: means that the column is now sorted
+    :param fugue_icons: Whether to use Fugue icons or Bootstrap icons.
     """
     return {
         'columns': columns,
         'sort': sort,
         'url_query': url_query,
+        'fugue_icons': fugue_icons,
     }
+
+
+@register.filter
+def bob_query_page(query, page):
+    query = query.copy()
+    if page is not None and page not in ('1', 1):
+        query['page'] = page
+    else:
+        try:
+            del query['page']
+        except KeyError:
+            pass
+    return query.urlencode()
+
+@register.filter
+def bob_query_sort(query, sort):
+    query = query.copy()
+    if sort:
+        query['sort'] = sort
+    else:
+        try:
+            del query['sort']
+        except KeyError:
+            pass
+    return query.urlencode()
+
+@register.filter
+def bob_query_sort_desc(query, sort):
+    query = query.copy()
+    query['sort'] = '-' + sort
+    return query.urlencode()
+
+@register.filter
+def bob_query_export(query, export):
+    query = query.copy()
+    if export:
+        query['export'] = export
+    else:
+        try:
+            del query['export']
+        except KeyError:
+            pass
+    return query.urlencode()

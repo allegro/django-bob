@@ -33,7 +33,6 @@ class UTF8Recoder:
     def next(self):
         return self.reader.next().encode("utf-8")
 
-
 class UnicodeReader:
     """
     A CSV reader which will iterate over lines in the CSV file "f",
@@ -80,3 +79,4 @@ class UnicodeWriter:
     def writerows(self, rows):
         for row in rows:
             self.writerow(row)
+
