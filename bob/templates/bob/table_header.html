@@ -7,7 +7,7 @@
 {%     if column.field %}
         <th class="column-head-{{ column.field }}">
         {% if sort == column.field %}
-            <a href="?{{ url_query|bob_query_sort_desc:column.field }}"
+            <a href="?{% bob_sort_url url_query column.field sort_variable_name 'desc' %}"
                 {% if fugue_icons %}
                     class="fugue-icon fugue-sort-{{ column.type|default:'alphabet' }}"
                 {% else %}
@@ -16,7 +16,7 @@
             ></a>
         {% else %}
             {%  if sort|cut:'-' == column.field %}
-                <a href="?{{ url_query|bob_query_sort:column.field }}"
+                <a href="?{% bob_sort_url url_query column.field sort_variable_name 'asc' %}"
                     {% if fugue_icons %}
                         class="fugue-icon fugue-sort-{{ column.type|default:'alphabet' }}-descending"
                     {% else %}
@@ -24,7 +24,7 @@
                     {% endif %}
                 ></a>
             {% else %}
-                <a href="?{{ url_query|bob_query_sort:column.field }}"
+                <a href="?{% bob_sort_url url_query column.field sort_variable_name 'asc' %}"
                     {% if fugue_icons %}
                         class="fugue-icon fugue-sort"
                     {% else %}

@@ -22,7 +22,7 @@ def bob_icon(name, is_white=False):
 
 
 @register.inclusion_tag('bob/main_menu.html')
-def main_menu(items, selected, title="", search=None, white=False,
+def main_menu(items, selected, title=None, search=None, white=False,
               position=''):
     """
     Show main menu bar.
@@ -93,7 +93,7 @@ def sidebar_menu_subitems(item, selected):
 @register.inclusion_tag('bob/pagination.html')
 def pagination(page, show_all=False, show_csv=False,
                fugue_icons=False, url_query=None, neighbors=1,
-               query_variable_name='page'):
+               query_variable_name='page', export_variable_name='export'):
     """
     Display pagination for a list of items.
 
@@ -142,7 +142,8 @@ def pagination(page, show_all=False, show_csv=False,
         'url_previous_page': changed_url(url_query, query_variable_name, page_no-1),
         'url_next_page': changed_url(url_query, query_variable_name, page_no+1),
         'url_pages': url_pages,
-        'url_all': changed_url(url_query, query_variable_name, 0)
+        'url_all': changed_url(url_query, query_variable_name, 0),
+        'export_variable_name': export_variable_name,
     }
 
 
@@ -198,8 +199,8 @@ def timesince_limited(d):
 
 
 @register.inclusion_tag('bob/form.html')
-def form(form, action, method="POST", title=None, css_class="",
-         fugue_icons=False, submit_label='Save'):
+def form(form, action="", method="POST", title=None,
+         css_class="form-horizontal", fugue_icons=False, submit_label='Save'):
     """
     Render a form.
 
@@ -222,7 +223,8 @@ def form(form, action, method="POST", title=None, css_class="",
 
 
 @register.inclusion_tag('bob/table_header.html')
-def table_header(columns=None, url_query=None, sort=None, fugue_icons=False):
+def table_header(columns=None, url_query=None, sort=None, fugue_icons=False,
+                 sort_variable_name='sort'):
     """
     Render a table header with sorted column options
 
@@ -237,47 +239,34 @@ def table_header(columns=None, url_query=None, sort=None, fugue_icons=False):
         'sort': sort,
         'url_query': url_query,
         'fugue_icons': fugue_icons,
+        'sort_variable_name': sort_variable_name,
     }
 
-
-@register.filter
-def bob_query_page(query, page):
+@register.simple_tag
+def bob_sort_url(query, field, sort_variable_name, type):
+    """Modify the query string of an URL to change the ``sort_variable_name``
+    argument.
+    """
     query = query.copy()
-    if page is not None and page not in ('1', 1):
-        query['page'] = page
-    else:
-        try:
-            del query['page']
-        except KeyError:
-            pass
+    if type == 'desc':
+        query[sort_variable_name] = '-' + field
+    elif type == 'asc':
+        query[sort_variable_name] = field
     return query.urlencode()
 
-@register.filter
-def bob_query_sort(query, sort):
+@register.simple_tag
+def bob_export_url(query, value, export_variable_name='export'):
+    """Modify the query string of an URL to change the ``export_variable_name``
+    argument.
+    """
+    if not query:
+        return '%s=%s' % (export_variable_name, value)
     query = query.copy()
-    if sort:
-        query['sort'] = sort
+    if value:
+        query[export_variable_name] = value
     else:
         try:
-            del query['sort']
-        except KeyError:
-            pass
-    return query.urlencode()
-
-@register.filter
-def bob_query_sort_desc(query, sort):
-    query = query.copy()
-    query['sort'] = '-' + sort
-    return query.urlencode()
-
-@register.filter
-def bob_query_export(query, export):
-    query = query.copy()
-    if export:
-        query['export'] = export
-    else:
-        try:
-            del query['export']
+            del query[export_variable_name]
         except KeyError:
             pass
     return query.urlencode()
