@@ -87,8 +87,7 @@ class DataTableMixin(object):
             'page': self.page_contents,
         }
 
-    def data_table_query(self, queryset, model):
-        self.model = model
+    def data_table_query(self, queryset):
         queryset = self.sort_queryset(queryset, columns=self.columns)
         if self.export_requested():
             self.response = self.do_csv_export(queryset)
