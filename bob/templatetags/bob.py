@@ -225,7 +225,7 @@ def form(form, action="", method="POST", fugue_icons=False,
 
 @register.inclusion_tag('bob/form.html')
 def form_horizontal(*args, **kwargs):
-        return form(*args, **kwargs)
+    return form(*args, **kwargs)
 
 
 @register.inclusion_tag('bob/table_header.html')
