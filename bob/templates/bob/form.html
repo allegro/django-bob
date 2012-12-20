@@ -1,6 +1,9 @@
 <form
-    class="form {{css_class}}"
+    class="form {{ css_class }}"
     method="{{ method.upper }}"
+{% if form.is_multipart %}
+    enctype="multipart/form-data"
+{% endif %}
     action="{{ action }}">
 {% if method.upper == "POST" %}
 {%   csrf_token %}
