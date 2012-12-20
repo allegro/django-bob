@@ -208,8 +208,8 @@ def form(form, action="", method="POST", title=None,
     :param action: The submit URL.
     :param method: The submit method, either ``"GET"`` or ``"POST"``.
     :param fugue_icons: Whether to use Fugue or Bootstrap icon.
+    :param css_class: The CSS class to use for the ``<form>`` tag.
     :param title: Form title.
-    :param css_class: Additional css class for ``form`` tag.
     """
     return {
         'form': form,
