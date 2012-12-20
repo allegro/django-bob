@@ -142,7 +142,8 @@ class DataTableMixin(object):
 
     def get_csv_data(self, queryset):
         """Should returns generic rows.
-         Override this method in inherited class"""
+        Override this method in inherited class
+        """
 
     def do_csv_export(self, queryset):
         f = StringIO.StringIO()

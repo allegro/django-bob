@@ -199,8 +199,8 @@ def timesince_limited(d):
 
 
 @register.inclusion_tag('bob/form.html')
-def form(form, action="", method="POST", title=None,
-         css_class="form-horizontal", fugue_icons=False, submit_label='Save'):
+def form(form, action="", method="POST", fugue_icons=False,
+         css_class="form-horizontal", title=None, submit_label='Save'):
     """
     Render a form.
 
@@ -210,16 +210,22 @@ def form(form, action="", method="POST", title=None,
     :param fugue_icons: Whether to use Fugue or Bootstrap icon.
     :param css_class: The CSS class to use for the ``<form>`` tag.
     :param title: Form title.
+    :param submit_label: Submit button label.
     """
     return {
         'form': form,
         'action': action,
         'title': title,
         'method': method,
-        'css_class': css_class,
         'fugue_icons': fugue_icons,
+        'css_class': css_class,
         'submit_label': submit_label,
     }
+
+
+@register.inclusion_tag('bob/form.html')
+def form_horizontal(*args, **kwargs):
+        return form(*args, **kwargs)
 
 
 @register.inclusion_tag('bob/table_header.html')
