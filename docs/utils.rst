@@ -6,3 +6,5 @@ Utilities
 .. autofunction:: pagination
 
 .. autofunction:: timesince_limited
+
+.. autofunction:: table_header
