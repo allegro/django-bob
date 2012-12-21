@@ -81,22 +81,16 @@ class DataTableMixin(object):
         cell = ''
         if obj:
             try:
-               model._meta.get_field_by_name(field)[0].choices
-            except FieldDoesNotExist:
+                model._meta.get_field_by_name(field)[0].choices
+                cell = getattr(obj, 'get_' + field + '_display')()
+            except (FieldDoesNotExist, AttributeError):
+                pass
+            if not cell:
                 try:
                     cell = getattr(obj, field)
                 except AttributeError:
                     pass
-            else:
-                try:
-                    cell = getattr(obj, 'get_' + field + '_display')()
-                except AttributeError:
-                    pass
         return cell
-
-    def get_export_response(self, **kwargs):
-        """Should be used if you want to return export file"""
-        return self.response
 
     def get_context_data_paginator(self, **kwargs):
         """Returns paginator data dict, crafted for usage in template."""
