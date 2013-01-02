@@ -1,0 +1,92 @@
+{% load url from future %}
+{% load bob %}
+{% if columns %}
+<thead><tr>
+{% for column in columns %}
+{%   if column.bob_tag %}
+{%     if column.field %}
+        <th class="column-head-{{ column.field }}">
+        {% if sort == column.field %}
+            <a href="?{% bob_sort_url url_query column.field sort_variable_name 'desc' %}"
+                {% if fugue_icons %}
+                    class="fugue-icon fugue-sort-{{ column.type|default:'alphabet' }}"
+                {% else %}
+                    class="icon-arrow-up"
+                {% endif %}
+            ></a>
+        {% else %}
+            {%  if sort|cut:'-' == column.field %}
+                <a href="?{% bob_sort_url url_query column.field sort_variable_name 'asc' %}"
+                    {% if fugue_icons %}
+                        class="fugue-icon fugue-sort-{{ column.type|default:'alphabet' }}-descending"
+                    {% else %}
+                        class="icon-arrow-down"
+                    {% endif %}
+                ></a>
+            {% else %}
+                <a href="?{% bob_sort_url url_query column.field sort_variable_name 'asc' %}"
+                    {% if fugue_icons %}
+                        class="fugue-icon fugue-sort"
+                    {% else %}
+                        class="icon-filter"
+                    {% endif %}
+                 ></a>
+            {%  endif %}
+        {% endif %}
+        {{ column.header_name }}
+        </th>
+        {% elif column.selectable %}
+            <th>
+                <div class="dropdown">
+                    <a href="#" data-toggle="dropdown" class="dropdown-toggle">
+                        <i class="
+                            {% if fugue_icons %}
+                                fugue-icon fugue-ui-check-boxes-series
+                            {% else %}
+                                icon-list-alt
+                            {% endif %}
+                        "></i>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#" class="bob-select-all">
+                            <i class="
+                            {% if fugue_icons %}
+                                fugue-icon fugue-ui-check-box
+                            {% else %}
+                                icon-ok-circle
+                            {% endif %}
+                            ">
+                            </i>&nbsp;Select all on this page</a>
+                        </li>
+                        <li>
+                            <a href="#" class="bob-select-toggle">
+                                <i class="
+                                {% if fugue_icons %}
+                                    fugue-icon fugue-ui-check-box-mix
+                                {% else %}
+                                    icon-retweet
+                                {% endif %}
+                                ">
+                                </i>&nbsp;Reverse selection</a>
+                        </li>
+                        <li>
+                            <a href="#" class="bob-select-none">
+                                <i class="
+                                {% if fugue_icons %}
+                                    fugue-icon fugue-ui-check-box-uncheck
+                                {% else %}
+                                    icon-remove-circle
+                                {% endif %}
+                                "></i>&nbsp;Deselect all
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </th>
+        {% else %}
+        <th>{{ column.header_name }}</th>
+{%     endif %}
+{%   endif %}
+{% endfor %}
+<thead><tr>
+{% endif %}

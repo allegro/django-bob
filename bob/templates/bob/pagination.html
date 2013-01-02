@@ -62,7 +62,7 @@
             ></i> {{ page.paginator.count }} items</a></li>
         {% endif %}
         {% if show_csv %}
-        <li><a href="?{{ url_query|bob_export:'csv' }}" rel="tooltip"
+        <li><a href="?{% bob_export_url url_query 'csv' export_variable_name %}" rel="tooltip"
                title="Export as CSV"><i
             {% if fugue_icons %}
             class="fugue-icon fugue-blue-document-excel-csv"
