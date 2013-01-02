@@ -200,7 +200,7 @@ def timesince_limited(d):
 
 @register.inclusion_tag('bob/form.html')
 def form(form, action="", method="POST", fugue_icons=False,
-         css_class="form-horizontal", title=None, submit_label='Save'):
+         css_class="form-horizontal", title="", submit_label='Save'):
     """
     Render a form.
 
