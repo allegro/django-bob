@@ -5,10 +5,9 @@
     enctype="multipart/form-data"
 {% endif %}
     action="{{ action }}">
-{% if method.upper == "POST" %}
-{%   csrf_token %}
-{% endif %}
-{% for f in form %}
+{% if method.upper == "POST" %}{% csrf_token %}{% endif %}
+{% for f in form.hidden_fields %}{{ f }}{% endfor %}
+{% for f in form.visible_fields %}
 <div class="control-group{% if f.errors %} error{% endif %}">
     <label class="control-label" for="{{f.name}}">{{ f.label }}</label>
     <div class="controls">
