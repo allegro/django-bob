@@ -19,7 +19,9 @@ class AutocompleteWidget(forms.Select):
         labels = dict(self.choices)
         output = [
             u'<input type="text" autocomplete="off" data-provide="typeahead" data-items="10" data-source="%s" value="%s" %s>' % (
-                escape(json.dumps(zip(*self.choices)[1])),
+                escape(
+                    json.dumps(zip(*self.choices)[1] if self.choices else [])
+                ),
                 escape(labels.get(value, value)),
                 flatatt(final_attrs))
         ]
