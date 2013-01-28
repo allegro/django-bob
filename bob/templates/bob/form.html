@@ -9,7 +9,12 @@
 {% for f in form.hidden_fields %}{{ f }}{% endfor %}
 {% for f in form.visible_fields %}
 <div class="control-group{% if f.errors %} error{% endif %}">
-    <label class="control-label" for="{{f.name}}">{{ f.label }}</label>
+    <label
+        class="control-label{% if f.field.required %} required{% endif %}"
+        for="{{f.name}}"
+    >
+        {{ f.label }}
+    </label>
     <div class="controls">
         {{ f }}
         {% if f.errors %}
