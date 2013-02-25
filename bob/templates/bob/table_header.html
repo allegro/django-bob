@@ -6,32 +6,34 @@
 {%   if column.bob_tag %}
 {%     if column.field %}
         <th class="column-head-{{ column.field }}">
-        {% if sort == column.field %}
-            <a href="?{% bob_sort_url url_query column.field sort_variable_name 'desc' %}"
-                {% if fugue_icons %}
-                    class="fugue-icon fugue-sort-{{ column.type|default:'alphabet' }}"
-                {% else %}
-                    class="icon-arrow-up"
-                {% endif %}
-            ></a>
-        {% else %}
-            {%  if sort|cut:'-' == column.field %}
-                <a href="?{% bob_sort_url url_query column.field sort_variable_name 'asc' %}"
+        {% if column.sort_expression %}
+            {% if sort == column.field %}
+                <a href="?{% bob_sort_url url_query column.field sort_variable_name 'desc' %}"
                     {% if fugue_icons %}
-                        class="fugue-icon fugue-sort-{{ column.type|default:'alphabet' }}-descending"
+                        class="fugue-icon fugue-sort-{{ column.type|default:'alphabet' }}"
                     {% else %}
-                        class="icon-arrow-down"
+                        class="icon-arrow-up"
                     {% endif %}
                 ></a>
             {% else %}
-                <a href="?{% bob_sort_url url_query column.field sort_variable_name 'asc' %}"
-                    {% if fugue_icons %}
-                        class="fugue-icon fugue-sort"
-                    {% else %}
-                        class="icon-filter"
-                    {% endif %}
-                 ></a>
-            {%  endif %}
+                {%  if sort|cut:'-' == column.field %}
+                    <a href="?{% bob_sort_url url_query column.field sort_variable_name 'asc' %}"
+                        {% if fugue_icons %}
+                            class="fugue-icon fugue-sort-{{ column.type|default:'alphabet' }}-descending"
+                        {% else %}
+                            class="icon-arrow-down"
+                        {% endif %}
+                    ></a>
+                {% else %}
+                    <a href="?{% bob_sort_url url_query column.field sort_variable_name 'asc' %}"
+                        {% if fugue_icons %}
+                            class="fugue-icon fugue-sort"
+                        {% else %}
+                            class="icon-filter"
+                        {% endif %}
+                     ></a>
+                {%  endif %}
+            {% endif %}
         {% endif %}
         {{ column.header_name }}
         </th>
