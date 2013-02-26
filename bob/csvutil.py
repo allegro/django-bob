@@ -84,23 +84,21 @@ class UnicodeWriter:
 
 def make_csv_response(self, data=[], filename='export.csv'):
     """
-    Returns CSV response
+    Create a HTTP response for downloading a CSV file with provided data.
 
-    :param data - list of data
-    :param filename - name of return file
+    :param data - list of rows of data
+    :param filename - the name of the file to be downloaded
 
     How to use:
-    ...
-    from bob.csvutil import make_csv_response
-    ...
-    self.rows = [
-        ['CAR', 'COLOR'],
-        ['Ford', 'Red'],
-        ['BMW', 'Black'],
-    ]
-    if request.get('export') == 'csv':
-        return make_csv_response(data=self.rows, filename='myfile.csv')
-    ...
+    >>> from bob.csvutil import make_csv_response
+
+    >>> self.rows = [
+    ...    ['CAR', 'COLOR'],
+    ...    ['Ford', 'Red'],
+    ...    ['BMW', 'Black'],
+    ...]
+    >>> if request.get('export') == 'csv':
+    ...    return make_csv_response(data=self.rows, filename='myfile.csv')
     """
 
     f = cStringIO.StringIO()
