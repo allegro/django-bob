@@ -90,15 +90,12 @@ def make_csv_response(self, data=[], filename='export.csv'):
     :param filename - the name of the file to be downloaded
 
     How to use:
-    >>> from bob.csvutil import make_csv_response
-
-    >>> self.rows = [
+    >>> rows = [
     ...    ['CAR', 'COLOR'],
     ...    ['Ford', 'Red'],
     ...    ['BMW', 'Black'],
     ...]
-    >>> if request.get('export') == 'csv':
-    ...    return make_csv_response(data=self.rows, filename='myfile.csv')
+    >>> response = make_csv_response(data=rows, filename='myfile.csv')
     """
 
     f = cStringIO.StringIO()
