@@ -82,11 +82,30 @@ class UnicodeWriter:
             self.writerow(row)
 
 
-class ExportToCSV:
-    def export(self, data=[], filename='export.csv'):
-        f = cStringIO.StringIO()
-        UnicodeWriter(f).writerows(data)
-        response = HttpResponse(f.getvalue(), content_type='application/csv')
-        disposition = 'attachment; filename=%s' % filename
-        response['Content-Disposition'] = disposition
-        return response
+def make_csv_response(self, data=[], filename='export.csv'):
+    """
+    Returns CSV response
+
+    :param data - list of data
+    :param filename - name of return file
+
+    How to use:
+    ...
+    from bob.csvutil import make_csv_response
+    ...
+    self.rows = [
+        ['CAR', 'COLOR'],
+        ['Ford', 'Red'],
+        ['BMW', 'Black'],
+    ]
+    if request.get('export') == 'csv':
+        return make_csv_response(data=self.rows, filename='myfile.csv')
+    ...
+    """
+
+    f = cStringIO.StringIO()
+    UnicodeWriter(f).writerows(data)
+    response = HttpResponse(f.getvalue(), content_type='application/csv')
+    disposition = 'attachment; filename=%s' % filename
+    response['Content-Disposition'] = disposition
+    return response
