@@ -82,7 +82,7 @@ class UnicodeWriter:
             self.writerow(row)
 
 
-def make_csv_response(self, data=[], filename='export.csv'):
+def make_csv_response(data=[], filename='export.csv'):
     """
     Create a HTTP response for downloading a CSV file with provided data.
 
