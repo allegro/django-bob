@@ -15,6 +15,7 @@ import codecs
 import cStringIO
 import csv
 
+from django.http import HttpResponse
 
 class excel_semicolon(csv.excel):
     delimiter = b';'
@@ -80,3 +81,12 @@ class UnicodeWriter:
         for row in rows:
             self.writerow(row)
 
+
+class ExportToCSV:
+    def export(self, data=[], filename='export.csv'):
+        f = cStringIO.StringIO()
+        UnicodeWriter(f).writerows(data)
+        response = HttpResponse(f.getvalue(), content_type='application/csv')
+        disposition = 'attachment; filename=%s' % filename
+        response['Content-Disposition'] = disposition
+        return response
