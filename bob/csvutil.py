@@ -99,11 +99,7 @@ def make_csv_response(data=[], filename='export.csv'):
     """
 
     f = cStringIO.StringIO()
-    unicode_data = []
-    for row in data:
-        fields = [unicode(field) for field in row]
-        unicode_data.append(fields)
-    UnicodeWriter(f).writerows(unicode_data)
+    UnicodeWriter(f).writerows((unicode(item) for item in row) for row in data)
     response = HttpResponse(f.getvalue(), content_type='application/csv')
     disposition = 'attachment; filename=%s' % filename
     response['Content-Disposition'] = disposition
