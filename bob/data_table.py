@@ -157,10 +157,7 @@ class DataTableMixin(object):
         """
 
     def do_csv_export(self, queryset):
-        f = StringIO.StringIO()
-        data = self.get_csv_data(queryset)
-        csvutil.UnicodeWriter(f).writerows(data)
-        response = HttpResponse(f.getvalue(), content_type="application/csv")
-        response['Content-Disposition'] = 'attachment; filename={}'.format(
-            self.csv_file_name)
-        return response
+        return csvutil.make_csv_response(
+                data= self.get_csv_data(queryset),
+                filename=self.csv_file_name
+            )
