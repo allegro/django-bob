@@ -158,6 +158,6 @@ class DataTableMixin(object):
 
     def do_csv_export(self, queryset):
         return csvutil.make_csv_response(
-                data= self.get_csv_data(queryset),
-                filename=self.csv_file_name
+                data=self.get_csv_data(queryset),
+                filename=self.csv_file_name,
             )
