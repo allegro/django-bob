@@ -111,7 +111,8 @@ def pagination(page, show_all=False, show_csv=False,
             'show_csv': show_csv,
             'fugue_icons': fugue_icons,
             'url_query': url_query,
-            }
+            'export_variable_name': export_variable_name,
+        }
     paginator = page.paginator
     page_no = page.number
     pages = paginator.page_range[max(0, page_no - 1 - neighbors):
