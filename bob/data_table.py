@@ -68,6 +68,7 @@ class DataTableMixin(object):
 
     csv_file_name = 'file.csv'
     query_variable_name = 'page'
+    export_variable_name = 'export'
     rows_per_page = 15
     sort = None
 
