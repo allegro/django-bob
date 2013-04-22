@@ -104,25 +104,24 @@ class DataTableMixin(object):
         }
 
     def data_table_query(self, queryset):
-        queryset = self.sort_queryset(queryset, columns=self.columns)
+        queryset = self.sort_queryset(queryset)
         if self.export_requested():
             self.response = self.do_csv_export(queryset)
         else:
             self.page_contents = self._paginate(queryset)
 
-    def sort_queryset(self, queryset, columns, sort=None):
+    def sort_queryset(self, queryset, sort=None):
         """Sorted queryset based on sort param"""
         self.prepare_sortable_columns()
-        if columns and queryset:
-            if sort is None:
-                sort = self.request.GET.get(self.sort_variable_name)
-            if sort:
-                sort_columns = self.sortable_columns.get(sort.strip('-'))
-                if sort_columns:
-                    if sort.startswith('-'):
-                        sort_columns = '-' + sort_columns
-                    queryset = queryset.order_by(sort_columns)
-                    self.sort = sort_columns
+        if sort is None:
+            sort = self.request.GET.get(self.sort_variable_name)
+        if sort:
+            sort_columns = self.sortable_columns.get(sort.strip('-'))
+            if sort_columns:
+                if sort.startswith('-'):
+                    sort_columns = '-' + sort_columns
+                queryset = queryset.order_by(sort_columns)
+                self.sort = sort_columns
         return queryset
 
     def prepare_sortable_columns(self):
