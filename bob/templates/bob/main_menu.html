@@ -5,7 +5,7 @@
     {%if position == 'fixed'  %} navbar-fixed-top{% endif %}
     {%if position == 'bottom'  %} navbar-fixed-bottom{% endif %}
 "><div class="navbar-inner"><div class="container">
-    {% if title %}<a href="/" class="brand">{{ title }}</a>{% endif %}
+    {% if title %}<a href="{{ title_url }}" class="brand">{{ title }}</a>{% endif %}
     <ul class="nav">
         {% for item in items %}
         {%   if not item.kwargs.pull_right %}

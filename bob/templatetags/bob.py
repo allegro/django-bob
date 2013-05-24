@@ -23,7 +23,7 @@ def bob_icon(name, is_white=False):
 
 @register.inclusion_tag('bob/main_menu.html')
 def main_menu(items, selected, title=None, search=None, white=False,
-              position=''):
+              position='', title_url="/"):
     """
     Show main menu bar.
 
@@ -42,6 +42,7 @@ def main_menu(items, selected, title=None, search=None, white=False,
         'search': search,
         'position': position,
         'white': bool(white),
+        'title_url': title_url,
         }
 
 
