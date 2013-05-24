@@ -238,6 +238,7 @@ def table_header(columns=None, url_query=None, sort=None, fugue_icons=False,
 
     :param columns: a list of objects of
     type :py:class:bob.data_table.DataTableColumn
+
     :param url_query: The query parameters to add to all page links
     :param sort: means that the column is now sorted
     :param fugue_icons: Whether to use Fugue icons or Bootstrap icons.
