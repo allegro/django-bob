@@ -20,7 +20,7 @@ $(function ($) {
         });
         table.find('input[name="selectall"]').prop('checked', false);
     });
-    $('.datepicker').datepicker({format: 'yyyy-mm-dd', autoclose: true}).click(function(){
-        $("input.datepicker[name!='" + $(this).attr('name') + "']").datepicker('hide');
+    $('.datepicker').datepicker({autoclose: true}).click(function(){
+        $('input.datepicker').not(this).datepicker('hide');
     });
 });

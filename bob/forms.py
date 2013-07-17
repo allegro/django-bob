@@ -43,8 +43,6 @@ class DateTimeWidget(forms.DateInput):
 
 class DateWidget(forms.DateInput):
     def render(self, name, value='', attrs=None, choices=()):
-        if value == None:
-            value = ''
         attr_class =  escape(self.attrs.get('class', ''))
         attr_placeholder = escape(self.attrs.get('placeholder', ''))
         output = ('<input type="text" name="%s" class="datepicker %s" '
