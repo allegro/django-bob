@@ -20,4 +20,7 @@ $(function ($) {
         });
         table.find('input[name="selectall"]').prop('checked', false);
     });
+    $('.datepicker').datepicker({autoclose: true}).click(function(){
+        $('input.datepicker').not(this).datepicker('hide');
+    });
 });

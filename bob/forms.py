@@ -40,3 +40,14 @@ class DateTimeWidget(forms.DateInput):
 
     input_type = 'datetime'
 
+
+class DateWidget(forms.DateInput):
+    """A date widget using jQuery date picker."""
+
+    def render(self, name, value='', attrs=None, choices=()):
+        attr_class =  escape(self.attrs.get('class', ''))
+        attr_placeholder = escape(self.attrs.get('placeholder', ''))
+        output = ('<input type="text" name="%s" class="datepicker %s" '
+                  'placeholder="%s" value="%s" data-date-format="yyyy-mm-dd">')
+        return mark_safe(output % (escape(name), attr_class,
+                                   attr_placeholder, escape(value or '')))
