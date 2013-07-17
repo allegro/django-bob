@@ -7,8 +7,8 @@ setup(
 Bob is a library of templates, template tags, helper functions and form widgets
 that make it easier to use the Twitter's Bootstrap framework with Django.
     """,
-    version='1.5.8',
-    license='BSD',
+    version='1.5.9',
+    license='Apache 2',
     url='http://bob.readthedocs.org/',
     author='Radomir Dopieralski',
     author_email='devel@sheep.art.pl',
@@ -21,7 +21,7 @@ that make it easier to use the Twitter's Bootstrap framework with Django.
     classifiers=[
         'Environment :: Web Environment',
         'Intended Audience :: Developers',
-        'License :: OSI Approved :: BSD License',
+        'License :: OSI Approved :: Apache 2 License',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
         'Topic :: Scientific/Engineering :: Human Machine Interfaces',
