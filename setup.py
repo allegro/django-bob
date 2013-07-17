@@ -21,7 +21,7 @@ that make it easier to use the Twitter's Bootstrap framework with Django.
     classifiers=[
         'Environment :: Web Environment',
         'Intended Audience :: Developers',
-        'License :: OSI Approved :: Apache 2 License',
+        'License :: OSI Approved :: Apache Software License',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
         'Topic :: Scientific/Engineering :: Human Machine Interfaces',
