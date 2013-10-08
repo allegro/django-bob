@@ -16,8 +16,10 @@
             }
             master.change(function () {
                 if(condition(master.val())) {
+                    slave.removeAttr('disabled');
                     slaveCtrl.show();
                 } else {
+                    slave.attr('disabled', 'disabled');
                     slaveCtrl.hide();
                 }
             });

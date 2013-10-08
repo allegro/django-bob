@@ -296,6 +296,5 @@ def dependency_data(form):
 
     if not isinstance(form, DependencyForm):
         return ''
-    return 'data-bob-dependencies="{0}"'.format(esc(json.dumps([
-        dep._asdict() for dep in form.dependencies
-    ])))
+    return 'data-bob-dependencies="{0}"'.format(
+        esc(json.dumps(form.get_dependencies_for_js())))
