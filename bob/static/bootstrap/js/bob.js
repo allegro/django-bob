@@ -58,5 +58,6 @@
                     form, $.parseJSON(form.dataset.bobDependencies));
             }
         });
+        $('.help-tooltip').tooltip();
     });
 }($));

@@ -10,28 +10,7 @@
 {% if method.upper == "POST" %}{% csrf_token %}{% endif %}
 {% for f in form.hidden_fields %}{{ f }}{% endfor %}
 {% for f in form.visible_fields %}
-<div class="control-group{% if f.errors %} error{% endif %}">
-    <label
-        class="control-label{% if f.field.required %} required{% endif %}"
-        for="{{f.name}}"
-    >
-        {{ f.label }}
-    </label>
-    <div class="controls">
-        {{ f }}
-        {% if f.errors %}
-        <span class="help-block">
-            {% for e in f.errors %}{{ e }}{% endfor %}
-        </span>
-        {% else %}
-        {%   if f.help_text %}
-        <span class="help-block">
-            {{ f.help_text }}
-        </span>
-        {%   endif %}
-        {% endif %}
-    </div>
-</div>
+    {% field_wrapper f %}
 {% endfor %}
 <div class="form-actions">
     {% spaceless %}
