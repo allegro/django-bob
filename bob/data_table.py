@@ -161,4 +161,4 @@ class DataTableMixin(object):
             data=data, filename=self.csv_file_name)
 
     def do_csv_export(self, queryset):
-        return self.make_csv_response(get_csv_data(queryset))
+        return self.make_csv_response(self.get_csv_data(queryset))
