@@ -1,4 +1,41 @@
 (function ($) {
+
+    function AsyncLoader(url) {
+        this.url = url;
+    }
+
+    AsyncLoader.prototype.start = function() {
+        $.ajax({
+            url: this.url,
+            success: this.handleInitialReq,
+            context: this,
+        });
+    };
+
+    AsyncLoader.prototype.handleInitialReq= function (result, success, response) {
+        var that;
+        that = this;
+        this.jobid = result.jobid;
+        $('#async-progress').show();
+        this.intervalHandle = setInterval(function () {
+            $.ajax({
+                url: that.url,
+                data: {_report_jobid: that.jobid},
+                success: that.handleUpdate,
+                context: that,
+            });
+        }, 4e3);
+    };
+
+    AsyncLoader.prototype.handleUpdate = function (result, success, response) {
+        if (result.finished) {
+            clearInterval(this.intervalHandle);
+            window.location = this.url + '?' + $.param(
+                    {_report_jobid: this.jobid, _report_finish: true});
+
+        }
+    };
+
     function bindDependencies(form, dependencies) {
         $.each(dependencies, function (i, dep) {
             var master, slave, slaveCtrl;
@@ -26,6 +63,15 @@
             master.change();
         });
     }
+
+
+    function prepareAsync() {
+        $('#async-progress').hide();
+        $('.async-csv').click(function (ev) {
+            new AsyncLoader(window.location + '/csv').start();
+            return false;
+        });
+    } 
 
     $(function ($) {
         $('.bob-select-all').click(function () {
@@ -58,5 +104,6 @@
                     form, $.parseJSON(form.dataset.bobDependencies));
             }
         });
+        prepareAsync()
     });
 }($));
