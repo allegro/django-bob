@@ -102,7 +102,7 @@ def sidebar_menu_subitems(item, selected):
 
 
 @register.inclusion_tag('bob/pagination.html')
-def pagination(page, show_all=False, show_csv=False, async_csv=False,
+def pagination(page, show_all=False, show_csv=False,
                fugue_icons=False, url_query=None, neighbors=1,
                query_variable_name='page', export_variable_name='export'):
     """
@@ -111,7 +111,6 @@ def pagination(page, show_all=False, show_csv=False, async_csv=False,
     :param page: Django's paginator page to display.
     :param show_all: Whether to show a link for disabling pagination.
     :param show_csv: Whether to show a link to CSV download.
-    :param async_csv: Whether the CSV should work in async mode.
     :param fugue_icons: Whether to use Fugue icons or Bootstrap icons.
     :param url_query: The query parameters to add to all page links.
     :param neighbors: How many neighboring pages to show in paginator.
@@ -121,7 +120,6 @@ def pagination(page, show_all=False, show_csv=False, async_csv=False,
         return {
             'show_all': show_all,
             'show_csv': show_csv,
-            'async_csv': async_csv,
             'fugue_icons': fugue_icons,
             'url_query': url_query,
             'export_variable_name': export_variable_name,
@@ -151,7 +149,6 @@ def pagination(page, show_all=False, show_csv=False, async_csv=False,
         'pages': pages,
         'show_all': show_all,
         'show_csv': show_csv,
-        'async_csv': async_csv,
         'fugue_icons': fugue_icons,
         'url_query': url_query,
         'url_previous_page': changed_url(url_query, query_variable_name, page_no-1),
