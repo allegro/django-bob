@@ -12,10 +12,10 @@
             {% for e in field.errors %}{{ e }}{% endfor %}
         </span>
         {% else %}
-        {%   if field.help_text %}
+        {% if field.help_text %}
         <span class="icon-question-sign help-tooltip"
             title="{{ field.help_text|escape }}" />
-        {%   endif %}
+        {% endif %}
         {% endif %}
     </div>
 </div>
