@@ -298,3 +298,8 @@ def dependency_data(form):
         return ''
     return 'data-bob-dependencies="{0}"'.format(
         esc(json.dumps(form.get_dependencies_for_js())))
+
+@register.inclusion_tag('bob/field_wrapper.html')
+def field_wrapper(field):
+    """Render the full control-group tag of a field."""
+    return {'field': field}
