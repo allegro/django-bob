@@ -39,7 +39,7 @@ class DependencyForm(object): # Can't inherit Form due to metaclass conflict
         data = super(DependencyForm, self).clean()
         for dep in self.dependencies:
             if not dep.met(data):
-                if dep.action == 'SHOW':
+                if dep.action == SHOW:
                     del self._errors[dep.slave]
         return data
     
