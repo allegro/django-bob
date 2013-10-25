@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
     name='django-bob',
@@ -13,7 +13,7 @@ that make it easier to use the Twitter's Bootstrap framework with Django.
     author='Radomir Dopieralski',
     author_email='devel@sheep.art.pl',
     keywords='bootstrap django css html',
-    packages=['bob', 'bob.templatetags'],
+    packages=find_packages(),
     install_requires=['distribute', 'django'],
     platforms='any',
     include_package_data=True,
