@@ -1,6 +1,8 @@
+{% load bob %}
 <form
     class="form {{ css_class }}"
     method="{{ method.upper }}"
+    {% dependency_data form %}
 {% if form.is_multipart %}
     enctype="multipart/form-data"
 {% endif %}

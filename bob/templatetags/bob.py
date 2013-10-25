@@ -1,9 +1,19 @@
+# -*- coding: utf-8 -*-
+
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
+import json
+import datetime
+
 from django import template
 from django.utils.safestring import mark_safe
 from django.utils.html import conditional_escape as esc
-
 from django.utils.timesince import timesince
-import datetime
+from bob.forms.dependency import DependencyForm
+
 
 register = template.Library()
 
@@ -279,3 +289,12 @@ def bob_export_url(query, value, export_variable_name='export'):
         except KeyError:
             pass
     return query.urlencode()
+
+@register.simple_tag
+def dependency_data(form):
+    """Render the data-bob-dependencies tag if this is a DependencyForm"""
+
+    if not isinstance(form, DependencyForm):
+        return ''
+    return 'data-bob-dependencies="{0}"'.format(
+        esc(json.dumps(form.get_dependencies_for_js())))
