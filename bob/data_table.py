@@ -156,8 +156,9 @@ class DataTableMixin(object):
         Override this method in inherited class
         """
 
-    def do_csv_export(self, queryset):
+    def make_csv_response(self, data):
         return csvutil.make_csv_response(
-                data=self.get_csv_data(queryset),
-                filename=self.csv_file_name,
-            )
+            data=data, filename=self.csv_file_name)
+
+    def do_csv_export(self, queryset):
+        return self.make_csv_response(self.get_csv_data(queryset))
