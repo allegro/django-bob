@@ -1,6 +1,4 @@
 (function ($) {
-
-
     function bindDependencies(form, dependencies) {
         $.each(dependencies, function (i, dep) {
             var master, slave, slaveCtrl;
@@ -28,8 +26,6 @@
             master.change();
         });
     }
-
-
 
     $(function ($) {
         $('.bob-select-all').click(function () {
