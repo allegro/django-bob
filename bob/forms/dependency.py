@@ -40,7 +40,7 @@ class DependencyForm(object): # Can't inherit Form due to metaclass conflict
         for dep in self.dependencies:
             if not dep.met(data):
                 if dep.action == SHOW:
-                    del self._errors[dep.slave]
+                    self._errors.pop(dep.slave, None)
         return data
     
     def _format_single_val_for_js(self, val):
