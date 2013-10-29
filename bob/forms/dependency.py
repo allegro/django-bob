@@ -24,7 +24,9 @@ class Dependency(object):
 
     def met(self, data):
         """Return true if condition is met."""
-        val = data[self.master]
+        val = data.get(self.master)
+        if val is None:
+            return False
         if isinstance(self.value, Container):
             return val in self.value
         else:
