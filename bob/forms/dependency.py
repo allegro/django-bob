@@ -8,6 +8,7 @@ from __future__ import unicode_literals
 from collections import namedtuple, Container
 
 from django.db.models import Model
+from django.utils.translation import ugettext as _
 
 SHOW = 'SHOW'
 REQUIRE = 'REQUIRE'
@@ -44,7 +45,7 @@ class DependencyForm(object): # Can't inherit Form due to metaclass conflict
             if dep.met(cleaned_data):
                 if dep.action == REQUIRE:
                     if not self.data.get(dep.slave):
-                        msg = 'This field is required'
+                        msg = _("This field is required")
                         self._errors[dep.slave] = self.error_class([msg])
             else:
                 if dep.action in {SHOW}:
