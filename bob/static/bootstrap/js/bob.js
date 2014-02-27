@@ -19,15 +19,25 @@
                     return dep.value === value;
                 };
             }
-            master.change(function () {
-                if (condition(master.val())) {
-                    slave.removeAttr('disabled');
-                    slaveCtrl.show();
-                } else {
-                    slave.attr('disabled', 'disabled');
-                    slaveCtrl.hide();
-                }
-            });
+            if (dep.action === "REQUIRE") {
+                master.change(function () {
+                    if (condition(master.val())) {
+                        $(slaveCtrl).find('label').addClass('required');
+                    } else {
+                        $(slaveCtrl).find('label').removeClass('required');
+                    }
+                });
+            } else if (dep.action === "SHOW") {
+                master.change(function () {
+                    if (condition(master.val())) {
+                        slave.removeAttr('disabled');
+                        slaveCtrl.show();
+                    } else {
+                        slave.attr('disabled', 'disabled');
+                        slaveCtrl.hide();
+                    }
+                });
+            }
             master.change();
         });
     };

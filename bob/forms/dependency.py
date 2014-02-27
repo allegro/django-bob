@@ -8,8 +8,10 @@ from __future__ import unicode_literals
 from collections import namedtuple, Container
 
 from django.db.models import Model
+from django.utils.translation import ugettext as _
 
 SHOW = 'SHOW'
+REQUIRE = 'REQUIRE'
 
 Dependency = namedtuple('Dependency', ('slave', 'master', 'value', 'action'))
 
@@ -38,17 +40,24 @@ class DependencyForm(object): # Can't inherit Form due to metaclass conflict
     dependencies = []
 
     def clean(self):
-        data = super(DependencyForm, self).clean()
+        cleaned_data = super(DependencyForm, self).clean()
         for dep in self.dependencies:
-            if not dep.met(data):
-                if dep.action == SHOW:
+            if dep.met(cleaned_data):
+                if dep.action == REQUIRE:
+                    if not self.data.get(dep.slave):
+                        msg = _("This field is required")
+                        self._errors[dep.slave] = self.error_class([msg])
+            else:
+                if dep.action in {SHOW}:
                     self._errors.pop(dep.slave, None)
-        return data
-    
+        return cleaned_data
+
     def _format_single_val_for_js(self, val):
         """Return the appropriate js representation of a single value."""
-        if isinstance(val, Model):
-            return str(val.id)
+        if not isinstance(val, str):
+            if isinstance(val, Model):
+                val = val.id
+            val = str(val)
         return val
 
 
