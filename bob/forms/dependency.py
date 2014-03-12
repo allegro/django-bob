@@ -56,7 +56,7 @@ class DependencyForm(object): # Can't inherit Form due to metaclass conflict
         """Return the appropriate js representation of a single value."""
         if not isinstance(val, str):
             if isinstance(val, Model):
-                val = val.id
+                val = val.pk
             val = str(val)
         return val
 
