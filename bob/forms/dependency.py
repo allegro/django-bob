@@ -44,7 +44,11 @@ class DependencyForm(object): # Can't inherit Form due to metaclass conflict
         for dep in self.dependencies:
             if dep.met(cleaned_data):
                 if dep.action == REQUIRE:
-                    if not self.data.get(dep.slave):
+                    unfilled = (
+                        dep.slave in cleaned_data and not
+                        cleaned_data[dep.slave]
+                    )
+                    if unfilled:
                         msg = _("This field is required")
                         self._errors[dep.slave] = self.error_class([msg])
             else:
