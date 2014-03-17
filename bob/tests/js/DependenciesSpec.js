@@ -55,11 +55,12 @@ describe("Dependencies", function() {
       ]],
       options;
     djangoBob.setFieldValue(field, values);
-    expect(field.children('[selected="selected"]').val()).toEqual(values[0]);
+    expect(field.children('[selected="selected"]').val()).toEqual(String(values[0]));
+    expect(field.val()).toEqual(String(values[0]));
     options = field.children().map(function (i, el) {
       var $el= $(el);
-      return [[$el.val(), $el.html()]];
+      return [[parseInt($el.val(), 10), $el.html()]];
     });
-    expect(options).toEqual(values);
+    expect(options.toArray()).toEqual(values[1]);
   });
 });

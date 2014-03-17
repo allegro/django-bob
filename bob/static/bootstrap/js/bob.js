@@ -28,9 +28,10 @@ var djangoBob = function ($) {
             $field.prop("checked", value);
         } else if ($.isArray(value) && $field.is('select')) {
             $field.children().remove();
-            $.each(value, function(i, el) {
+            $.each(value[1], function(i, el) {
                 $field.append($('<option></option>').val(el[0]).html(el[1]))
             });
+            $field.val(value[0]);
         } else {
             $field.val(value);
         }
