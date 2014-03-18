@@ -46,7 +46,11 @@ var djangoBob = function ($) {
 
         if (typeof (master.data(slavesName) === "undefined")) {
             master.data(slavesName, [slaveDescription]);
-            master.change(function () {
+            master.change(function (event, options) {
+                if (this.value === '' ||
+                       (typeof options !== "undefined" && options.pageLoad)) {
+                    return;
+                }
                 var passedSlaves = [],
                     slavesNames = $(this).data(slavesName),
                     slavesNamesLength = slavesNames.length,
@@ -62,7 +66,7 @@ var djangoBob = function ($) {
                 if (passedSlaves.length > 0) {
                     $.ajax(url, {
                         data: {
-                            value: value
+                            value: this.value
                         },
                         dataType: "json",
                         complete: function(request, status) {
@@ -119,7 +123,9 @@ var djangoBob = function ($) {
             } else if (dep.action === "AJAX_UPDATE") {
                 bindAjaxUpdate(master, slave, dep.value, dep.options.url);
             }
-            master.change();
+            master.trigger("change", {
+                pageLoad: true
+            });
         });
     };
 
