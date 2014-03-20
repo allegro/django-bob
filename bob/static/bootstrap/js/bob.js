@@ -2,12 +2,12 @@
 /*global jQuery: false */
 var djangoBob = function ($) {
     'use strict';
-    var dependencyCondition,
+    var isConditionMet,
         bindAjaxUpdate,
         bindDependencies,
         setFieldValue;
 
-    dependencyCondition = function (dependencyValue, value) {
+    isConditionMet = function (dependencyValue, value) {
         if ($.isArray(dependencyValue)) {
             return dependencyValue.indexOf(value) !== -1;
         } else if (dependencyValue === null) {
@@ -57,7 +57,7 @@ var djangoBob = function ($) {
                     slaveObj;
                 for (var i = 0; i < slavesNamesLength; i++) {
                     slaveObj = slavesNames[i];
-                    if (dependencyCondition(value, slaveObj.value)) {
+                    if (isConditionMet(value, slaveObj.value)) {
                         passedSlaves.push(slaveObj.field);
                         slaveObj.field.addClass('value-loading');
                     }
@@ -104,7 +104,7 @@ var djangoBob = function ($) {
             slaveCtrl = slave.parents('.control-group');
             if (dep.action === "REQUIRE") {
                 master.change(function () {
-                    if (dependencyCondition(master.val())) {
+                    if (isConditionMet(master.val())) {
                         $(slaveCtrl).find('label').addClass('required');
                     } else {
                         $(slaveCtrl).find('label').removeClass('required');
@@ -112,7 +112,7 @@ var djangoBob = function ($) {
                 });
             } else if (dep.action === "SHOW") {
                 master.change(function () {
-                    if (dependencyCondition(master.val())) {
+                    if (isConditionMet(master.val())) {
                         slave.removeAttr('disabled');
                         slaveCtrl.show();
                     } else {
@@ -130,7 +130,7 @@ var djangoBob = function ($) {
     };
 
     return {
-        dependencyCondition: dependencyCondition,
+        isConditionMet: isConditionMet,
         bindAjaxUpdate: bindAjaxUpdate,
         setFieldValue: setFieldValue,
         bindDependencies: bindDependencies

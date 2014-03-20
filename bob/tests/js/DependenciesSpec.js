@@ -1,27 +1,27 @@
 describe("Dependencies", function() {
 
   it("should be able to check if field value equals dependency value", function() {
-    expect(djangoBob.dependencyCondition('aaa', 'aaa')).toBeTruthy();
-    expect(djangoBob.dependencyCondition('a', 'b')).not.toBeTruthy();
-    expect(djangoBob.dependencyCondition('3', 3)).not.toBeTruthy();
-    expect(djangoBob.dependencyCondition({a: 'b'}, {a: 'b'})).toBeTruthy();
-    expect(djangoBob.dependencyCondition({a: 'b'}, "{a: 'b'}")).not.toBeTruthy();
-    expect(djangoBob.dependencyCondition(false, false)).toBeTruthy();
+    expect(djangoBob.isConditionMet('aaa', 'aaa')).toBeTruthy();
+    expect(djangoBob.isConditionMet('a', 'b')).not.toBeTruthy();
+    expect(djangoBob.isConditionMet('3', 3)).not.toBeTruthy();
+    expect(djangoBob.isConditionMet({a: 'b'}, {a: 'b'})).toBeTruthy();
+    expect(djangoBob.isConditionMet({a: 'b'}, "{a: 'b'}")).not.toBeTruthy();
+    expect(djangoBob.isConditionMet(false, false)).toBeTruthy();
   });
 
   it("should always pass field value if dependency value was null", function() {
-    expect(djangoBob.dependencyCondition(null, 'aaa')).toBeTruthy();
-    expect(djangoBob.dependencyCondition(null, false)).toBeTruthy();
-    expect(djangoBob.dependencyCondition(null, null)).toBeTruthy();
-    expect(djangoBob.dependencyCondition(null, {a: 'b'})).toBeTruthy();
+    expect(djangoBob.isConditionMet(null, 'aaa')).toBeTruthy();
+    expect(djangoBob.isConditionMet(null, false)).toBeTruthy();
+    expect(djangoBob.isConditionMet(null, null)).toBeTruthy();
+    expect(djangoBob.isConditionMet(null, {a: 'b'})).toBeTruthy();
   });
 
   it("should match field value to element of dependency value array", function() {
-    expect(djangoBob.dependencyCondition([1, 2, 'aaa', 3], 'aaa')).toBeTruthy();
-    expect(djangoBob.dependencyCondition([1, 2, 'aaa', 3], false)).not.toBeTruthy();
-    expect(djangoBob.dependencyCondition([false, 3], false)).toBeTruthy();
-    expect(djangoBob.dependencyCondition([null], null)).toBeTruthy();
-    expect(djangoBob.dependencyCondition([null], {a: 'b'})).not.toBeTruthy();
+    expect(djangoBob.isConditionMet([1, 2, 'aaa', 3], 'aaa')).toBeTruthy();
+    expect(djangoBob.isConditionMet([1, 2, 'aaa', 3], false)).not.toBeTruthy();
+    expect(djangoBob.isConditionMet([false, 3], false)).toBeTruthy();
+    expect(djangoBob.isConditionMet([null], null)).toBeTruthy();
+    expect(djangoBob.isConditionMet([null], {a: 'b'})).not.toBeTruthy();
   });
 
   it("should set value to text field", function () {
