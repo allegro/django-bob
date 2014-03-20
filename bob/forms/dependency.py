@@ -10,19 +10,32 @@ from collections import namedtuple, Container
 from django.db.models import Model
 from django.utils.translation import ugettext as _
 
+
 SHOW = 'SHOW'
 REQUIRE = 'REQUIRE'
+AJAX_UPDATE = 'AJAX_UPDATE'
+
 
 Dependency = namedtuple('Dependency', ('slave', 'master', 'value', 'action'))
 
-class Dependency(object):
-    """The single dependency: if master has value then do action on slave."""
 
-    def __init__(self, slave, master, value, action):
+class Dependency(object):
+    """The single dependency: if master has value then do action on slave.
+
+    If action is ``AJAX_UPDATE`` you have to set `url` kwarg. Url corresponds
+    to
+    :py:class:bob.views.dependency.DependencyView
+    subclass.
+    """
+
+    def __init__(self, slave, master, value, action, **options):
         self.slave = slave
         self.master = master
         self.value = value
         self.action = action
+        self.options = options
+        if action == AJAX_UPDATE:
+            assert 'url' in options, "Source url not provided."
 
     def met(self, data):
         """Return true if condition is met."""
@@ -34,7 +47,8 @@ class Dependency(object):
         else:
             return val == self.value
 
-class DependencyForm(object): # Can't inherit Form due to metaclass conflict
+
+class DependencyForm(object):  # Can't inherit Form due to metaclass conflict
     """Form mixin with dependency feature."""
 
     dependencies = []
@@ -58,12 +72,13 @@ class DependencyForm(object): # Can't inherit Form due to metaclass conflict
 
     def _format_single_val_for_js(self, val):
         """Return the appropriate js representation of a single value."""
+        if val is None:
+            return val
         if not isinstance(val, str):
             if isinstance(val, Model):
                 val = val.pk
             val = str(val)
         return val
-
 
     def get_dependencies_for_js(self):
         """Return the dependencies in a format ready to be JSON serialized for
@@ -75,6 +90,10 @@ class DependencyForm(object): # Can't inherit Form due to metaclass conflict
             else:
                 value = self._format_single_val_for_js(dep.value)
             result.append({
-                'slave': dep.slave, 'master': dep.master,
-                'value': value, 'action': dep.action})
+                'slave': dep.slave,
+                'master': dep.master,
+                'value': value,
+                'action': dep.action,
+                'options': dep.options
+            })
         return result
