@@ -34,6 +34,8 @@ class Dependency(object):
         self.value = value
         self.action = action
         self.options = options
+        self.options['page_load_update'] = options.get('page_load_update',
+                                                       True)
         if action == AJAX_UPDATE:
             assert 'url' in options, "Source url not provided."
 
@@ -72,7 +74,7 @@ class DependencyForm(object):  # Can't inherit Form due to metaclass conflict
 
     def _format_single_val_for_js(self, val):
         """Return the appropriate js representation of a single value."""
-        if val is None:
+        if val is None or isinstance(val, bool):
             return val
         if not isinstance(val, str):
             if isinstance(val, Model):

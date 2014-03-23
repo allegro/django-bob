@@ -37,18 +37,28 @@ var djangoBob = function ($) {
         }
     };
 
-    bindAjaxUpdate = function (master, slave, value, url) {
+    bindAjaxUpdate = function (master, slave, value, options) {
         var slavesName = "dependencySlaves";
         var slaveDescription = {
             field: slave,
-            value: value
+            value: value,
+            pageLoadUpdate: !!(options.page_load_update)
         };
+        var url = options.url;
 
-        if (typeof (master.data(slavesName) === "undefined")) {
+        function pageLoadCondition(pageLoadUpdate, eventOptions) {
+            // returns false if and only if this is page load event and code
+            // should not be executed, it means pageLoadUpdate is false and
+            // this is page load event
+            return pageLoadUpdate || !(
+                typeof eventOptions !== "undefined" && eventOptions.pageLoad
+            );
+        }
+
+        if (typeof master.data(slavesName) === "undefined") {
             master.data(slavesName, [slaveDescription]);
-            master.change(function (event, options) {
-                if (this.value === '' ||
-                       (typeof options !== "undefined" && options.pageLoad)) {
+            master.change(function (event, eventOptions) {
+                if (this.value === '') {
                     return;
                 }
                 var passedSlaves = [],
@@ -58,8 +68,11 @@ var djangoBob = function ($) {
                 for (var i = 0; i < slavesNamesLength; i++) {
                     slaveObj = slavesNames[i];
                     if (isConditionMet(value, slaveObj.value)) {
-                        passedSlaves.push(slaveObj.field);
-                        slaveObj.field.addClass('value-loading');
+                        if (pageLoadCondition(
+                                slaveObj.pageLoadUpdate, eventOptions)) {
+                            passedSlaves.push(slaveObj);
+                            slaveObj.field.addClass('value-loading');
+                        }
                     }
                 }
 
@@ -71,19 +84,26 @@ var djangoBob = function ($) {
                         dataType: "json",
                         complete: function(request, status) {
                             var slaveObj;
-                            for (var i = 0; i < slavesNamesLength; i++) {
-                                slaveObj = slavesNames[i];
+                            for (var i = 0; i < passedSlaves.length; i++) {
+                                slaveObj = passedSlaves[i];
                                 slaveObj.field.removeClass('value-loading');
                             }
                         },
                         success: function(data, status, request) {
                             var id,
                                 slaveObj;
-                            for (var i = 0; i < slavesNamesLength; i++) {
-                                slaveObj = slavesNames[i];
-                                id = slaveObj.field.attr('id').substr(3);
+                            for (var i = 0; i < passedSlaves.length; i++) {
+                                slaveObj = passedSlaves[i];
+                                id = (slaveObj.field.attr('name') ||
+                                    slaveObj.field.attr('id').substr(3));
                                 if (typeof(data[id]) !== "undefined") {
                                     setFieldValue(slaveObj.field, data[id]);
+                                    if (slaveObj.field.prop('type') === 'hidden') {
+                                        slaveObj.field.
+                                            next('.uneditable-input').html(
+                                                slaveObj.field.val()
+                                            );
+                                    }
                                 }
                             }
                         },
@@ -101,6 +121,9 @@ var djangoBob = function ($) {
             var master, slave, slaveCtrl;
             master = $('#id_' + dep.master);
             slave = $('#id_' + dep.slave);
+            if (slave.length == 0) {
+                slave = $('[name="' + dep.slave + '"]');
+            }
             slaveCtrl = slave.parents('.control-group');
             if (dep.action === "REQUIRE") {
                 master.change(function () {
@@ -121,7 +144,7 @@ var djangoBob = function ($) {
                     }
                 });
             } else if (dep.action === "AJAX_UPDATE") {
-                bindAjaxUpdate(master, slave, dep.value, dep.options.url);
+                bindAjaxUpdate(master, slave, dep.value, dep.options);
             }
             master.trigger("change", {
                 pageLoad: true
