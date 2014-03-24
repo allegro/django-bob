@@ -34,8 +34,9 @@ class Dependency(object):
         self.value = value
         self.action = action
         self.options = options
-        self.options['page_load_update'] = options.get('page_load_update',
-                                                       True)
+        self.options['page_load_update'] = options.get(
+            'page_load_update', True,
+        )
         if action == AJAX_UPDATE:
             assert 'url' in options, "Source url not provided."
 
