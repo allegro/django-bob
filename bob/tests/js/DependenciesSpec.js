@@ -1,29 +1,5 @@
 describe("Dependencies", function() {
 
-  it("should be able to check if field value equals dependency value", function() {
-    expect(djangoBob.isConditionMet('aaa', 'aaa')).toBeTruthy();
-    expect(djangoBob.isConditionMet('a', 'b')).not.toBeTruthy();
-    expect(djangoBob.isConditionMet('3', 3)).not.toBeTruthy();
-    expect(djangoBob.isConditionMet({a: 'b'}, {a: 'b'})).toBeTruthy();
-    expect(djangoBob.isConditionMet({a: 'b'}, "{a: 'b'}")).not.toBeTruthy();
-    expect(djangoBob.isConditionMet(false, false)).toBeTruthy();
-  });
-
-  it("should always pass field value if dependency value was null", function() {
-    expect(djangoBob.isConditionMet(null, 'aaa')).toBeTruthy();
-    expect(djangoBob.isConditionMet(null, false)).toBeTruthy();
-    expect(djangoBob.isConditionMet(null, null)).toBeTruthy();
-    expect(djangoBob.isConditionMet(null, {a: 'b'})).toBeTruthy();
-  });
-
-  it("should match field value to element of dependency value array", function() {
-    expect(djangoBob.isConditionMet([1, 2, 'aaa', 3], 'aaa')).toBeTruthy();
-    expect(djangoBob.isConditionMet([1, 2, 'aaa', 3], false)).not.toBeTruthy();
-    expect(djangoBob.isConditionMet([false, 3], false)).toBeTruthy();
-    expect(djangoBob.isConditionMet([null], null)).toBeTruthy();
-    expect(djangoBob.isConditionMet([null], {a: 'b'})).not.toBeTruthy();
-  });
-
   it("should set value to text field", function () {
     var field = $('<input type="text">');
     djangoBob.setFieldValue(field, "Nobody expects spanish inquisition!");
@@ -62,5 +38,81 @@ describe("Dependencies", function() {
       return [[parseInt($el.val(), 10), $el.html()]];
     });
     expect(options.toArray()).toEqual(values[1]);
+  });
+});
+
+describe("DependencyConditions", function () {
+  it("could check if value is empty", function () {
+    expect(djangoBobConditions.met("", ["notEmpty"])).not.toBeTruthy();
+    expect(djangoBobConditions.met(null, ["notEmpty"])).not.toBeTruthy();
+    expect(djangoBobConditions.met(undefined, ["notEmpty"])).not.toBeTruthy();
+  });
+
+  it("could check if value is not empty.", function () {
+    expect(djangoBobConditions.met(20, ["notEmpty"])).toBeTruthy();
+    expect(djangoBobConditions.met("2012-03-06", ["notEmpty"])).toBeTruthy();
+    expect(djangoBobConditions.met(false, ["notEmpty"])).toBeTruthy();
+    expect(djangoBobConditions.met([1,2,3], ["notEmpty"])).toBeTruthy();
+    expect(djangoBobConditions.met({a: '2'}, ["notEmpty"])).toBeTruthy();
+  });
+
+  it("could check if single value match exact condition.", function () {
+    expect(djangoBobConditions.met("3", ["exact", "3"])).toBeTruthy();
+  });
+
+  it("could check if value is converted to string for match condition.", function () {
+    expect(djangoBobConditions.met(3, ["exact", "3"])).toBeTruthy();
+  });
+
+  it("could check if false match exact condition with false.", function () {
+    expect(djangoBobConditions.met(false, ["exact", false])).toBeTruthy();
+  });
+
+  it("could check if list value match exact condition.", function () {
+    expect(djangoBobConditions.met([5, "3"], ["exact", ["5", "3"]])).toBeTruthy();
+  });
+
+  it("could check if value match exact date condition.", function () {
+    expect(djangoBobConditions.met(
+      new Date(2012, 2, 5),
+      ["exact", "2012-03-05"]
+    )).toBeTruthy();
+  });
+
+  it("could check if wrong date doesn't match exact condition.", function () {
+    expect(djangoBobConditions.met(
+      new Date(2013, 5, 5),
+      ["exact", "2012-03-05"]
+    )).not.toBeTruthy();
+  });
+
+  it("could check if value doesn't match exact condition.", function () {
+    expect(djangoBobConditions.met("3", ["exact", "5"])).not.toBeTruthy();
+    expect(djangoBobConditions.met(5, ["exact", "4"])).not.toBeTruthy();
+  });
+
+  it("could check if value is any value.", function () {
+    expect(djangoBobConditions.met(false, ["any"])).toBeTruthy();
+    expect(djangoBobConditions.met(undefined, ["any"])).toBeTruthy();
+    expect(djangoBobConditions.met(null, ["any"])).toBeTruthy();
+    expect(djangoBobConditions.met(3, ["any"])).toBeTruthy();
+    expect(djangoBobConditions.met("3", ["any"])).toBeTruthy();
+    expect(djangoBobConditions.met([1,2], ["any"])).toBeTruthy();
+    expect(djangoBobConditions.met({a: '3'}, ["any"])).toBeTruthy();
+  });
+
+  it("could check if value is member of array.", function () {
+    expect(djangoBobConditions.met(3, ["memberOf", ["1", "2", "3"]])).toBeTruthy();
+    expect(djangoBobConditions.met("3", ["memberOf", ["1", "2", "3"]])).toBeTruthy();
+    expect(djangoBobConditions.met(4, ["memberOf", ["1", "2", "3"]])).not.toBeTruthy();
+    expect(djangoBobConditions.met(false, ["memberOf", ["1", false, "3"]])).toBeTruthy();
+    expect(djangoBobConditions.met(false, ["memberOf", ["1", "false", "3"]])).not.toBeTruthy();
+  });
+
+  it("could check if date is member of array.", function () {
+    expect(djangoBobConditions.met(new Date(2012, 2, 7), ["memberOf", ["1", "2012-03-07", "3"]])).toBeTruthy();
+    expect(djangoBobConditions.met("2012-03-05", ["memberOf", ["1", "2012-03-05", "3"]])).toBeTruthy();
+    expect(djangoBobConditions.met(new Date(2012, 2, 5), ["memberOf", ["1", "2012-03-07", "3"]])).not.toBeTruthy();
+    expect(djangoBobConditions.met("2011-05-07", ["memberOf", ["1", "2012-03-07", "3"]])).not.toBeTruthy();
   });
 });
