@@ -74,19 +74,6 @@ var djangoBob = function ($) {
         bindDependencies,
         setFieldValue;
 
-
-    // isConditionMet = function (dependencyValue, value) {
-    //     if ($.isArray(dependencyValue)) {
-    //         return dependencyValue.indexOf(value) !== -1;
-    //     } else if (dependencyValue === null) {
-    //         return true;
-    //     } else if (Object.prototype.toString.call(dependencyValue) &&
-    //                Object.prototype.toString.call(dependencyValue)) {
-    //         return JSON.stringify(dependencyValue) === JSON.stringify(value);
-    //     }
-    //     return dependencyValue === value;
-    // };
-
     setFieldValue = function (field, value) {
         var $field = $(field);
         if (value == null) {
