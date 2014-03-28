@@ -195,6 +195,12 @@ var djangoBob = function ($) {
                         slaveCtrl.hide();
                     }
                 });
+            } else if (dep.action === "CLONE") {
+                master.change(function () {
+                    if (djangoBobConditions.met(master.val(), dep.condition)) {
+                        slave.val(master.val());
+                    }
+                });
             } else if (dep.action === "AJAX_UPDATE") {
                 bindAjaxUpdate(master, slave, dep.condition, dep.options);
             }
