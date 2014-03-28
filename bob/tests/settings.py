@@ -8,3 +8,5 @@ DATABASES = {
         ),
     },
 }
+
+SECRET_KEY = "secret"
