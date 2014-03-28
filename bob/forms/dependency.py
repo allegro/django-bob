@@ -11,9 +11,10 @@ from bob.forms.dependency_conditions import DependencyCondition
 
 
 # dependencies types
+AJAX_UPDATE = 'AJAX_UPDATE'
+CLONE = 'CLONE'
 SHOW = 'SHOW'
 REQUIRE = 'REQUIRE'
-AJAX_UPDATE = 'AJAX_UPDATE'
 
 
 class Dependency(object):
