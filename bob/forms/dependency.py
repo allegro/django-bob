@@ -5,18 +5,15 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
-from collections import namedtuple, Container
-
-from django.db.models import Model
 from django.utils.translation import ugettext as _
 
+from bob.forms.dependency_conditions import DependencyCondition
 
+
+# dependencies types
 SHOW = 'SHOW'
 REQUIRE = 'REQUIRE'
 AJAX_UPDATE = 'AJAX_UPDATE'
-
-
-Dependency = namedtuple('Dependency', ('slave', 'master', 'value', 'action'))
 
 
 class Dependency(object):
@@ -28,10 +25,11 @@ class Dependency(object):
     subclass.
     """
 
-    def __init__(self, slave, master, value, action, **options):
+    def __init__(self, slave, master, condition, action, **options):
         self.slave = slave
         self.master = master
-        self.value = value
+        self.condition = condition
+        assert isinstance(condition, DependencyCondition)
         self.action = action
         self.options = options
         self.options['page_load_update'] = options.get(
@@ -43,12 +41,7 @@ class Dependency(object):
     def met(self, data):
         """Return true if condition is met."""
         val = data.get(self.master)
-        if val is None:
-            return False
-        if isinstance(self.value, Container):
-            return val in self.value
-        else:
-            return val == self.value
+        return self.condition.met(val)
 
 
 class DependencyForm(object):  # Can't inherit Form due to metaclass conflict
@@ -73,29 +66,15 @@ class DependencyForm(object):  # Can't inherit Form due to metaclass conflict
                     self._errors.pop(dep.slave, None)
         return cleaned_data
 
-    def _format_single_val_for_js(self, val):
-        """Return the appropriate js representation of a single value."""
-        if val is None or isinstance(val, bool):
-            return val
-        if not isinstance(val, str):
-            if isinstance(val, Model):
-                val = val.pk
-            val = str(val)
-        return val
-
     def get_dependencies_for_js(self):
         """Return the dependencies in a format ready to be JSON serialized for
         JavaScript"""
         result = []
         for dep in self.dependencies:
-            if isinstance(dep.value, Container):
-                value = [self._format_single_val_for_js(v) for v in dep.value]
-            else:
-                value = self._format_single_val_for_js(dep.value)
             result.append({
                 'slave': dep.slave,
                 'master': dep.master,
-                'value': value,
+                'condition': dep.condition.get_js_format(),
                 'action': dep.action,
                 'options': dep.options
             })

@@ -1,23 +1,78 @@
 /*jslint unparam: true */
 /*global jQuery: false */
+var djangoBobConditions = function ($) {
+    var checkCondition;
+
+    function leadZeros(value, len) {
+        var s = String(value);
+        while (s.length < len) {
+            s = "0" + s;
+        }
+        return s;
+    }
+
+    function formatSingleValue(val) {
+        if (val instanceof Date) {
+            return [
+                val.getFullYear(),
+                leadZeros(val.getMonth() + 1, 2),
+                leadZeros(val.getDate(), 2)  // getDate returns month day
+            ].join('-');
+        } else if (typeof val === "boolean" || val === null) {
+            return val;
+        } else {
+            return String(val);
+        }
+    }
+
+    function formatValue(val) {
+        if ($.isArray(val)) {
+            return $.map(val, formatSingleValue);
+        } else {
+            return formatSingleValue(val);
+        }
+    }
+
+    var conditions = {
+        // declare own condition functions here and
+        // in bob.forms.dependency_conditions
+        any: function(value, conditionArgs) {
+            return true;
+        },
+        exact: function(value, conditionArgs) {
+            // we can assert, that values are string serializable
+            return JSON.stringify(formatValue(value)) == JSON.stringify(conditionArgs[0]);
+        },
+        memberOf: function(value, conditionArgs) {
+            return conditionArgs[0].indexOf(formatValue(value)) !== -1;
+        },
+        notEmpty: function (value, conditionArgs) {
+            return (typeof value !== "undefined" &&
+                    value !== null &&
+                    value !== "");
+        }
+    };
+
+    met = function(value, condition) {
+        var conditionFunc = conditions[condition[0]];
+        if (typeof conditionFunc === "undefined") {
+            console.error("Condition '" + condition[0] + "' is not defined.");
+        } else {
+            return conditionFunc(value, condition.slice(1));
+        }
+    };
+
+    return {
+        met: met
+    };
+}(jQuery);
+
+
 var djangoBob = function ($) {
     'use strict';
-    var isConditionMet,
-        bindAjaxUpdate,
+    var bindAjaxUpdate,
         bindDependencies,
         setFieldValue;
-
-    isConditionMet = function (dependencyValue, value) {
-        if ($.isArray(dependencyValue)) {
-            return dependencyValue.indexOf(value) !== -1;
-        } else if (dependencyValue === null) {
-            return true;
-        } else if (Object.prototype.toString.call(dependencyValue) &&
-                   Object.prototype.toString.call(dependencyValue)) {
-            return JSON.stringify(dependencyValue) === JSON.stringify(value);
-        }
-        return dependencyValue === value;
-    };
 
     setFieldValue = function (field, value) {
         var $field = $(field);
@@ -37,11 +92,11 @@ var djangoBob = function ($) {
         }
     };
 
-    bindAjaxUpdate = function (master, slave, value, options) {
+    bindAjaxUpdate = function (master, slave, condition, options) {
         var slavesName = "dependencySlaves";
         var slaveDescription = {
             field: slave,
-            value: value,
+            condition: condition,
             pageLoadUpdate: !!(options.page_load_update)
         };
         var url = options.url;
@@ -58,16 +113,13 @@ var djangoBob = function ($) {
         if (typeof master.data(slavesName) === "undefined") {
             master.data(slavesName, [slaveDescription]);
             master.change(function (event, eventOptions) {
-                if (this.value === '') {
-                    return;
-                }
                 var passedSlaves = [],
                     slavesNames = $(this).data(slavesName),
                     slavesNamesLength = slavesNames.length,
                     slaveObj;
                 for (var i = 0; i < slavesNamesLength; i++) {
                     slaveObj = slavesNames[i];
-                    if (isConditionMet(value, slaveObj.value)) {
+                    if (djangoBobConditions.met(master.val(), slaveObj.condition)) {
                         if (pageLoadCondition(
                                 slaveObj.pageLoadUpdate, eventOptions)) {
                             passedSlaves.push(slaveObj);
@@ -127,7 +179,7 @@ var djangoBob = function ($) {
             slaveCtrl = slave.parents('.control-group');
             if (dep.action === "REQUIRE") {
                 master.change(function () {
-                    if (isConditionMet(dep.value, master.val())) {
+                    if (djangoBobConditions.met(master.val(), dep.condition)) {
                         $(slaveCtrl).find('label').addClass('required');
                     } else {
                         $(slaveCtrl).find('label').removeClass('required');
@@ -135,7 +187,7 @@ var djangoBob = function ($) {
                 });
             } else if (dep.action === "SHOW") {
                 master.change(function () {
-                    if (isConditionMet(dep.value, master.val())) {
+                    if (djangoBobConditions.met(master.val(), dep.condition)) {
                         slave.removeAttr('disabled');
                         slaveCtrl.show();
                     } else {
@@ -144,7 +196,7 @@ var djangoBob = function ($) {
                     }
                 });
             } else if (dep.action === "AJAX_UPDATE") {
-                bindAjaxUpdate(master, slave, dep.value, dep.options);
+                bindAjaxUpdate(master, slave, dep.condition, dep.options);
             }
             master.trigger("change", {
                 pageLoad: true
@@ -153,11 +205,10 @@ var djangoBob = function ($) {
     };
 
     return {
-        isConditionMet: isConditionMet,
         bindAjaxUpdate: bindAjaxUpdate,
         setFieldValue: setFieldValue,
         bindDependencies: bindDependencies
-    }
+    };
 }(jQuery);
 
 $(document).ready(function () {

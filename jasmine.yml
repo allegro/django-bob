@@ -1,0 +1,7 @@
+src_files:
+  - "**/*"
+spec_files:
+  - "**/*Spec.js"
+src_dir: bob/static/bootstrap/js
+spec_dir: bob/tests/js
+
