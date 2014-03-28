@@ -1,4 +1,4 @@
-language: python
+language: python, ruby
 python:
   - "2.7"
 # command to install dependencies
