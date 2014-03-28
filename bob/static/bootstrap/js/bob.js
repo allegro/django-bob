@@ -196,7 +196,13 @@ var djangoBob = function ($) {
                     }
                 });
             } else if (dep.action === "CLONE") {
-                master.change(function () {
+                master.change(function (event, eventOptions) {
+                    if (typeof eventOptions !== "undefined") {
+                        if (!dep.options.page_load_update &&
+                            eventOptions.pageLoad === true) {
+                            return;
+                        }
+                    }
                     if (djangoBobConditions.met(master.val(), dep.condition)) {
                         slave.val(master.val());
                     }
