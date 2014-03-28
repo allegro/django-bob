@@ -1,15 +1,9 @@
-language: python, ruby
+language: python
 python:
   - "2.7"
 # command to install dependencies
 install:
-  - sudo apt-get install libqt4-dev
-  - sudo apt-get install qt4-qmake
-#  - sudo update-alternatives --config qmake # and select Qt 4's qmake
-  - sudo gem install jasmine-headless-webkit
   - pip install git+https://github.com/allegro/django-bob.git@develop
   - pip install . --use-mirrors
 # command to run tests, e.g. python setup.py test
 script: DJANGO_SETTINGS_MODULE=bob.tests.settings nosetests bob/tests/unit/dependencies.py
-script: jasmine-headless-webkit -j jasmine.yml
-
