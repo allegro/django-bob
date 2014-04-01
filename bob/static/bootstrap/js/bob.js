@@ -92,6 +92,13 @@ var djangoBob = function ($) {
         }
     };
 
+    function pageLoadCondition(pageLoadUpdate, e) {
+        // returns false if and only if this is page load event and code
+        // should not be executed, it means pageLoadUpdate is false and
+        // this is page load event
+        return pageLoadUpdate || !e.pageLoad;
+    }
+
     bindAjaxUpdate = function (master, slave, condition, options) {
         var slavesName = "dependencySlaves";
         var slaveDescription = {
@@ -101,18 +108,9 @@ var djangoBob = function ($) {
         };
         var url = options.url;
 
-        function pageLoadCondition(pageLoadUpdate, eventOptions) {
-            // returns false if and only if this is page load event and code
-            // should not be executed, it means pageLoadUpdate is false and
-            // this is page load event
-            return pageLoadUpdate || !(
-                typeof eventOptions !== "undefined" && eventOptions.pageLoad
-            );
-        }
-
         if (typeof master.data(slavesName) === "undefined") {
             master.data(slavesName, [slaveDescription]);
-            master.change(function (event, eventOptions) {
+            master.change(function (ev) {
                 var passedSlaves = [],
                     slavesNames = $(this).data(slavesName),
                     slavesNamesLength = slavesNames.length,
@@ -121,7 +119,7 @@ var djangoBob = function ($) {
                     slaveObj = slavesNames[i];
                     if (djangoBobConditions.met(master.val(), slaveObj.condition)) {
                         if (pageLoadCondition(
-                                slaveObj.pageLoadUpdate, eventOptions)) {
+                                slaveObj.pageLoadUpdate, ev)) {
                             passedSlaves.push(slaveObj);
                             slaveObj.field.addClass('value-loading');
                         }
@@ -196,21 +194,21 @@ var djangoBob = function ($) {
                     }
                 });
             } else if (dep.action === "CLONE") {
-                master.change(function (event, eventOptions) {
-                    if (typeof eventOptions !== "undefined") {
-                        if (!dep.options.page_load_update &&
-                            eventOptions.pageLoad === true) {
-                            return;
+                master.change(function (ev) {
+                    if (pageLoadCondition(dep.options.page_load_update, ev)) {
+                        if (djangoBobConditions.met(master.val(), dep.condition)) {
+                            slave.val(master.val()).trigger({
+                                type: 'change',
+                                cloneSource: master
+                            });
                         }
-                    }
-                    if (djangoBobConditions.met(master.val(), dep.condition)) {
-                        slave.val(master.val());
                     }
                 });
             } else if (dep.action === "AJAX_UPDATE") {
                 bindAjaxUpdate(master, slave, dep.condition, dep.options);
             }
-            master.trigger("change", {
+            master.trigger({
+                type: "change",
                 pageLoad: true
             });
         });
