@@ -19,45 +19,32 @@ class DependencyView(View):
     Base view for dependencies ajax data providers.
 
     Request is checked for the presence of the master field value.
-    Subclass must implement ``get_values`` method which returns dict of
-    dependent fields values, e.g.:
-
-    Fields 'sex' and 'country' depend on 'name'.
+    Subclass must implement :meth:`get_values` which returns dict of
+    dependent fields values, e.g.: Fields `sex` and `country`
+    depend on `name`.
 
     Request:
-    {
-        'value': 'Andrzej'
-    }
+
+        >>> {
+            'value': 'Andrzej'
+        }
 
     Response:
-    {
-        'sex': 'man',
-        'country': 'Poland'
-    }
+
+        >>> {
+            'sex': 'man',
+            'country': 'Poland'
+        }
     """
     def get_values(self, value):
         """
         Should provide value/values of dependent fields.
 
-        Returns dictionary with values for all dependent fields. If you need
-        to define options, define tuple like (value, [option1, option2, ...]).
-
         If value is not proper returns HttpResponse class which
-        will be returned.
+        will be returned with proper code.
 
         :param value: master field value, comes with ajax request
         :return: map of dependent field names - fields values
-
-        Example:
-        >>> value = 'Andrzej'
-
-        Response:
-        >>> {
-            'sex': 'man',
-            'marital_status': (1, [
-                (1, 'single'), (2, 'widower'), (3, 'married')
-            ])
-        }
         """
         raise NotImplementedError("Subclass should implement this method.")
 
