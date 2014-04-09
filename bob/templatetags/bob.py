@@ -252,14 +252,25 @@ def table_header(columns=None, url_query=None, sort=None, fugue_icons=False,
     :param sort: means that the column is now sorted
     :param fugue_icons: Whether to use Fugue icons or Bootstrap icons.
 
+    show_conditions field on column item - func and args which determines
+    whether the column is to be displayed.
     """
+    new_columns = []
+    for column in columns:
+        if isinstance(column.show_conditions, tuple):
+            func, arg = column.show_conditions
+            if func(arg):
+                new_columns.append(column)
+        else:
+            new_columns.append(column)
     return {
-        'columns': columns,
+        'columns': new_columns,
         'sort': sort,
         'url_query': url_query,
         'fugue_icons': fugue_icons,
         'sort_variable_name': sort_variable_name,
     }
+
 
 @register.simple_tag
 def bob_sort_url(query, field, sort_variable_name, type):
