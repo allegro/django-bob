@@ -1,11 +1,12 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import cStringIO as StringIO
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 
 from django.core.paginator import Paginator, EmptyPage
 from django.db.models import FieldDoesNotExist
-from django.http import HttpResponse
 
 from bob import csvutil
 
@@ -58,7 +59,6 @@ class DataTableColumn(object):
         return '<td>{}</td>'.format(self.render_cell_content(resource))
 
 
-
 class DataTableMixin(object):
     """Add this Mixin to your django view to handle page pagination.
 
@@ -81,9 +81,10 @@ class DataTableMixin(object):
 
     In your template add code::
 
-    {% pagination bob_page url_query=url_query show_all=0 show_csv=0 fugue_icons=1 sort_variable_name %}
+    {% pagination bob_page url_query=url_query show_all=0 show_csv=0 fugue_icons=1 sort_variable_name %}  # noqa
 
-    where ``query_variable_name`` - is the name of the attribute used for pagination, and::
+    where ``query_variable_name`` - is the name of the attribute used
+        for pagination, and::
 
     {% table_header columns url_query sort fugue_icons%}
 

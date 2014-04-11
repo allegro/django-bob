@@ -10,15 +10,18 @@ from django.forms.util import flatatt
 from django.utils.html import escape
 from django.utils import simplejson as json
 
+
 class AutocompleteWidget(forms.Select):
     """A choice widget using a text field with Bootstrap's autocomplete."""
 
     def render(self, name, value, attrs=None, choices=()):
-        if value is None: value = ''
+        if value is None:
+            value = ''
         final_attrs = self.build_attrs(attrs, name=name)
         labels = dict(self.choices)
         output = [
-            u'<input type="text" autocomplete="off" data-provide="typeahead" data-items="10" data-source="%s" value="%s" %s>' % (
+            u'<input type="text" autocomplete="off" data-provide="typeahead" '
+            'data-items="10" data-source="%s" value="%s" %s>' % (
                 escape(
                     json.dumps(zip(*self.choices)[1] if self.choices else [])
                 ),
@@ -31,7 +34,7 @@ class AutocompleteWidget(forms.Select):
         value = data.get(name, None)
         if value == '---------':
             return None
-        values = dict((label, value) for value, label in self.choices )
+        values = dict((label, value) for value, label in self.choices)
         return values.get(value, value)
 
 
@@ -45,7 +48,7 @@ class DateWidget(forms.DateInput):
     """A date widget using jQuery date picker."""
 
     def render(self, name, value='', attrs=None, choices=()):
-        attr_class =  escape(self.attrs.get('class', ''))
+        attr_class = escape(self.attrs.get('class', ''))
         attr_placeholder = escape(self.attrs.get('placeholder', ''))
         output = ('<input type="text" name="%s" class="datepicker %s" '
                   'placeholder="%s" value="%s" data-date-format="yyyy-mm-dd">')
