@@ -56,6 +56,12 @@ def main_menu(items, selected, title=None, search=None, white=False,
         }
 
 
+@register.simple_tag
+def render_cell(column, row):
+    """Render the cell for a given column and row."""
+    return column.render_cell(row)
+
+
 @register.inclusion_tag('bob/tab_menu.html')
 def tab_menu(items, selected, side=None):
     """

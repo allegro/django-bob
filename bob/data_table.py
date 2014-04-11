@@ -37,6 +37,27 @@ class DataTableColumn(object):
         self.export = export
         self.show_conditions = show_conditions
 
+    def render_cell_content(self, resource):
+        """Renders the content of the cell."""
+        if self.field:
+            for part in self.field.split('__'):
+                try:
+                    resource = getattr(resource, part)
+                except AttributeError:
+                    return ''
+            return str(resource)
+        else:
+            raise NotImplementedError(
+                "Either implement 'render_cell_content' method or set 'field' "
+                "on this column"
+            )
+
+    def render_cell(self, resource):
+        """Renders the cell that lies on intersectiosn between
+        this column and the given resource."""
+        return '<td>{}</td>'.format(self.render_cell_content(resource))
+
+
 
 class DataTableMixin(object):
     """Add this Mixin to your django view to handle page pagination.
