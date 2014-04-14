@@ -1,4 +1,12 @@
+# -*- coding: utf-8 -*-
+
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
 from django.core.urlresolvers import reverse
+
 
 class MenuItem(object):
     """
@@ -18,8 +26,10 @@ class MenuItem(object):
     :param view_kwargs: The keyword arguments for the URL rule.
     :param icon: A Bootstrap icon to show for this item.
     :param fugue_icon: A Fugue icon to show for this item, if available.
-    :param collapsible: Whether the submenu should be collapsible. Default ``False``.
-    :param collapsed: Whether the submenu should start collapsed. Default ``False``.
+    :param collapsible: Whether the submenu should be collapsible.
+        Default ``False``.
+    :param collapsed: Whether the submenu should start collapsed.
+        Default ``False``.
     :param indent: A string by which the item should be indented.
     """
 
@@ -65,4 +75,3 @@ class MenuHeader(object):
 
     def __init__(self, label):
         self.label = label
-

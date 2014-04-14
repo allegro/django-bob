@@ -56,6 +56,12 @@ def main_menu(items, selected, title=None, search=None, white=False,
         }
 
 
+@register.simple_tag
+def render_cell(column, row):
+    """Render the cell for a given column and row."""
+    return column.render_cell(row)
+
+
 @register.inclusion_tag('bob/tab_menu.html')
 def tab_menu(items, selected, side=None):
     """
@@ -126,8 +132,10 @@ def pagination(page, show_all=False, show_csv=False,
         }
     paginator = page.paginator
     page_no = page.number
-    pages = paginator.page_range[max(0, page_no - 1 - neighbors):
-    min(paginator.num_pages, page_no + neighbors)]
+    pages = paginator.page_range[
+        max(0, page_no - 1 - neighbors):
+        min(paginator.num_pages, page_no + neighbors)
+    ]
 
     if 1 not in pages:
         pages.insert(0, 1)
@@ -151,8 +159,16 @@ def pagination(page, show_all=False, show_csv=False,
         'show_csv': show_csv,
         'fugue_icons': fugue_icons,
         'url_query': url_query,
-        'url_previous_page': changed_url(url_query, query_variable_name, page_no-1),
-        'url_next_page': changed_url(url_query, query_variable_name, page_no+1),
+        'url_previous_page': changed_url(
+            url_query,
+            query_variable_name,
+            page_no - 1
+        ),
+        'url_next_page': changed_url(
+            url_query,
+            query_variable_name,
+            page_no + 1
+        ),
         'url_pages': url_pages,
         'url_all': changed_url(url_query, query_variable_name, 0),
         'export_variable_name': export_variable_name,
@@ -284,6 +300,7 @@ def bob_sort_url(query, field, sort_variable_name, type):
         query[sort_variable_name] = field
     return query.urlencode()
 
+
 @register.simple_tag
 def bob_export_url(query, value, export_variable_name='export'):
     """Modify the query string of an URL to change the ``export_variable_name``
@@ -301,6 +318,7 @@ def bob_export_url(query, value, export_variable_name='export'):
             pass
     return query.urlencode()
 
+
 @register.simple_tag
 def dependency_data(form):
     """Render the data-bob-dependencies tag if this is a DependencyForm"""
@@ -309,6 +327,7 @@ def dependency_data(form):
         return ''
     return 'data-bob-dependencies="{0}"'.format(
         esc(json.dumps(form.get_dependencies_for_js())))
+
 
 @register.inclusion_tag('bob/field_wrapper.html')
 def field_wrapper(field):

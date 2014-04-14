@@ -1,11 +1,12 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import cStringIO as StringIO
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 
 from django.core.paginator import Paginator, EmptyPage
 from django.db.models import FieldDoesNotExist
-from django.http import HttpResponse
 
 from bob import csvutil
 
@@ -37,6 +38,26 @@ class DataTableColumn(object):
         self.export = export
         self.show_conditions = show_conditions
 
+    def render_cell_content(self, resource):
+        """Renders the content of the cell."""
+        if self.field:
+            for part in self.field.split('__'):
+                try:
+                    resource = getattr(resource, part)
+                except AttributeError:
+                    return ''
+            return str(resource)
+        else:
+            raise NotImplementedError(
+                "Either implement 'render_cell_content' method or set 'field' "
+                "on this column"
+            )
+
+    def render_cell(self, resource):
+        """Renders the cell that lies on intersectiosn between
+        this column and the given resource."""
+        return '<td>{}</td>'.format(self.render_cell_content(resource))
+
 
 class DataTableMixin(object):
     """Add this Mixin to your django view to handle page pagination.
@@ -60,9 +81,10 @@ class DataTableMixin(object):
 
     In your template add code::
 
-    {% pagination bob_page url_query=url_query show_all=0 show_csv=0 fugue_icons=1 sort_variable_name %}
+    {% pagination bob_page url_query=url_query show_all=0 show_csv=0 fugue_icons=1 sort_variable_name %}  # noqa
 
-    where ``query_variable_name`` - is the name of the attribute used for pagination, and::
+    where ``query_variable_name`` - is the name of the attribute used
+        for pagination, and::
 
     {% table_header columns url_query sort fugue_icons%}
 

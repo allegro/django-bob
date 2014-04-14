@@ -17,6 +17,7 @@ import csv
 
 from django.http import HttpResponse
 
+
 class excel_semicolon(csv.excel):
     delimiter = b';'
 
@@ -33,6 +34,7 @@ class UTF8Recoder:
 
     def next(self):
         return self.reader.next().encode("utf-8")
+
 
 class UnicodeReader:
     """
