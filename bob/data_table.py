@@ -46,7 +46,7 @@ class DataTableColumn(object):
                     resource = getattr(resource, part)
                 except AttributeError:
                     return ''
-            return str(resource)
+            return unicode(resource)
         else:
             raise NotImplementedError(
                 "Either implement 'render_cell_content' method or set 'field' "
