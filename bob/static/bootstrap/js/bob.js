@@ -168,48 +168,52 @@ var djangoBob = function ($) {
 
     bindDependencies = function (form, dependencies) {
         $.each(dependencies, function (i, dep) {
-            var master, slave, slaveCtrl;
-            master = $('#id_' + dep.master);
-            slave = $('#id_' + dep.slave);
-            if (slave.length == 0) {
-                slave = $('[name="' + dep.slave + '"]');
-            }
-            slaveCtrl = slave.parents('.control-group');
-            if (dep.action === "REQUIRE") {
-                master.change(function () {
-                    if (djangoBobConditions.met(master.val(), dep.condition)) {
-                        $(slaveCtrl).find('label').addClass('required');
-                    } else {
-                        $(slaveCtrl).find('label').removeClass('required');
-                    }
-                });
-            } else if (dep.action === "SHOW") {
-                master.change(function () {
-                    if (djangoBobConditions.met(master.val(), dep.condition)) {
-                        slave.removeAttr('disabled');
-                        slaveCtrl.show();
-                    } else {
-                        slave.attr('disabled', 'disabled');
-                        slaveCtrl.hide();
-                    }
-                });
-            } else if (dep.action === "CLONE") {
-                master.change(function (ev) {
-                    if (pageLoadCondition(dep.options.page_load_update, ev)) {
+            var masters = $('[id$="-' + dep.master + '"]').add('#id_' + dep.master);
+            $.each(masters, function (j, master) {
+                master = $(master);
+                var slave, slaveCtrl, prefix;
+                prefix = master.attr('id').slice(0, -dep.master.length);
+                slave = $('#' + prefix + dep.slave);
+                if (slave.length == 0) {
+                    slave = $('[name="' + dep.slave + '"]');
+                }
+                slaveCtrl = slave.parents('.control-group');
+                if (dep.action === "REQUIRE") {
+                    master.change(function () {
                         if (djangoBobConditions.met(master.val(), dep.condition)) {
-                            slave.val(master.val()).trigger({
-                                type: 'change',
-                                cloneSource: master
-                            });
+                            $(slaveCtrl).find('label').addClass('required');
+                        } else {
+                            $(slaveCtrl).find('label').removeClass('required');
                         }
-                    }
+                    });
+                } else if (dep.action === "SHOW") {
+                    master.change(function () {
+                        if (djangoBobConditions.met(master.val(), dep.condition)) {
+                            slave.removeAttr('disabled');
+                            slaveCtrl.show();
+                        } else {
+                            slave.attr('disabled', 'disabled');
+                            slaveCtrl.hide();
+                        }
+                    });
+                } else if (dep.action === "CLONE") {
+                    master.change(function (ev) {
+                        if (pageLoadCondition(dep.options.page_load_update, ev)) {
+                            if (djangoBobConditions.met(master.val(), dep.condition)) {
+                                slave.val(master.val()).trigger({
+                                    type: 'change',
+                                    cloneSource: master
+                                });
+                            }
+                        }
+                    });
+                } else if (dep.action === "AJAX_UPDATE") {
+                    bindAjaxUpdate(master, slave, dep.condition, dep.options);
+                }
+                master.trigger({
+                    type: "change",
+                    pageLoad: true
                 });
-            } else if (dep.action === "AJAX_UPDATE") {
-                bindAjaxUpdate(master, slave, dep.condition, dep.options);
-            }
-            master.trigger({
-                type: "change",
-                pageLoad: true
             });
         });
     };
