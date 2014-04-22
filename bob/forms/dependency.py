@@ -5,8 +5,12 @@ For dependency usage you need to:
 
 * add :class:`DependencyForm` as your form mixin,
 * (optional) define :class:`bob.views.dependency.DependencyView` if
-  :const:`AJAX_UPDATE` used.
-* define ``dependencies`` property in you form.
+  :const:`AJAX_UPDATE` used,
+* define ``dependencies`` property in you form,
+* add tag to you form template:
+
+    <form id="{{ form_id }}" method="POST" {% dependency_data asset_form %}>
+
 
 ``dependencies`` example:
 
