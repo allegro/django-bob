@@ -1,0 +1,15 @@
+{% load bob %}
+{% load i18n %}
+TODO: remove asset dependency
+{% load assets %}
+
+{% for fieldset_label, field_names in form.Meta.fieldset.items %}
+<div class="well">
+  <h6>{% trans fieldset_label %}</h6>
+  {% for field_name in field_names %}
+    {% with field=form|get_item:field_name %}
+      {% field_wrapper field %}
+    {% endwith %}
+  {% endfor %}
+</div>
+{% endfor %}
