@@ -251,6 +251,17 @@ def form(form, action="", method="POST", fugue_icons=False,
     }
 
 
+@register.inclusion_tag('bob/form_as_fieldsets.html')
+def form_as_fieldsets(form_instance, *args, **kwargs):
+    if not getattr(form_instance.Meta, 'fieldset', None):
+        raise Exception(
+            "{}.Meta.fieldset attribute is UNDEFINED or EMPTY".format(
+                repr(form_instance)
+            )
+        )
+    return form(form_instance, *args, **kwargs)
+
+
 @register.inclusion_tag('bob/form.html')
 def form_horizontal(*args, **kwargs):
     return form(*args, **kwargs)
@@ -333,3 +344,8 @@ def dependency_data(form):
 def field_wrapper(field):
     """Render the full control-group tag of a field."""
     return {'field': field}
+
+
+@register.filter
+def get_item(obj, key):
+    return obj[key]
