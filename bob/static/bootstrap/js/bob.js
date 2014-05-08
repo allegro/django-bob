@@ -90,6 +90,7 @@ var djangoBob = function ($) {
         } else {
             $field.val(value);
         }
+        $field.trigger("change");
     };
 
     function pageLoadCondition(pageLoadUpdate, e) {
