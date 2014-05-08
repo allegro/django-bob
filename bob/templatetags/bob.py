@@ -344,3 +344,8 @@ def dependency_data(form):
 def field_wrapper(field):
     """Render the full control-group tag of a field."""
     return {'field': field}
+
+
+@register.filter
+def get_item(obj, key):
+    return obj[key]
