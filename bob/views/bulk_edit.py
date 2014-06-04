@@ -26,7 +26,6 @@ class BulkEditBase(TemplateView):
     """Base view for bulk edit."""
     commit_on_valid = True
     form_bulk = None
-    from_query_name = 'from_query'
     http_method_names = ['get', 'post']
     ids_key_name = 'select'
     model = None
