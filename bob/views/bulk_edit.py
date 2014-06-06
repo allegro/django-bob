@@ -23,7 +23,22 @@ MAX_BULK_EDIT_SIZE = getattr(settings, 'MAX_BULK_EDIT_SIZE', 40)
 
 
 class BulkEditBase(TemplateView):
-    """Base view for bulk edit."""
+    """
+    Base view for bulk edit.
+
+    Example of use:
+
+        >>> UserBulkEdit(BulkEditBase):
+        >>>     model = User
+        >>>     form_bulk = UserForm
+
+        or
+
+        >>> UserBulkEdit(BulkEditBase):
+        >>>     queryset = User.objects.filter(is_active=False)
+        >>>     form_bulk = UserForm
+
+    """
     commit_on_valid = True
     form_bulk = None
     http_method_names = ['get', 'post']
@@ -33,7 +48,10 @@ class BulkEditBase(TemplateView):
     success_url = None
 
     def initial_forms(self, formset, queryset):
-        pass
+        """
+        :param formset: formset with generated forms
+        :param queryset:
+        """
 
     def get(self, request, *args, **kwargs):
         queryset = self.get_queryset(*args, **kwargs)
@@ -46,7 +64,7 @@ class BulkEditBase(TemplateView):
                 )
             elif not objects_count:
                 messages.warning(request, _('Nothing to edit.'))
-            return HttpResponseRedirect(self.get_success_url())
+            return HttpResponseRedirect('..')
         FormSet = self.get_formset()
         formset = FormSet(queryset=queryset)
         self.initial_forms(formset, queryset)
@@ -72,15 +90,25 @@ class BulkEditBase(TemplateView):
         return context
 
     def get_success_url(self):
+        """Redirect after send formset."""
         if not self.success_url:
             return self.request.get_full_path()
         return self.success_url
 
     def get_form_bulk(self):
+        """
+        Attribute form_bulk is required. If yours form is lazy or
+        dynamic generated you could override this method.
+
+        :return: standar django form class
+        """
         if not self.form_bulk:
-            raise ImproperlyConfigured('You must define %(cls)s.form_bulk or '
-                                       'override %(cls)s.get_form_bulk method.'
-                                       % {'cls': self.__class__.__name__})
+            raise ImproperlyConfigured(
+                'You must define %(cls)s.form_bulk or override '
+                '%(cls)s.get_form_bulk method.' % {
+                    'cls': self.__class__.__name__,
+                }
+            )
         return self.form_bulk
 
     def get_formset(self, **kwargs):
@@ -93,16 +121,19 @@ class BulkEditBase(TemplateView):
                 query = self.get_query_from_request()
                 return self.model._default_manager.filter(query)
             else:
-                raise ImproperlyConfigured('You must define %(cls)s.model or '
-                                           '%(cls)s.queryset or override '
-                                           '%(cls)s.get_queryset method.'
-                                           % {'cls': self.__class__.__name__})
+                raise ImproperlyConfigured(
+                    'You must define %(cls)s.model or %(cls)s.queryset or '
+                    'override %(cls)s.get_queryset method.' % {
+                        'cls': self.__class__.__name__,
+                    }
+                )
         return self.queryset._clone()
 
     def get_query_from_request(self):
         return Q(pk__in=self.get_items_ids())
 
     def get_items_ids(self):
+        """Get ids of object from request parameters."""
         ids = self.request.GET.getlist(self.ids_key_name)
         try:
             int_ids = map(int, ids)
@@ -111,11 +142,18 @@ class BulkEditBase(TemplateView):
         return int_ids
 
     def save_formset(self, instances, formset):
+        """
+        If commit_on_valid is set to `False` then this method will be required.
+        If you override this method you must save instances manually (if you
+        want of course).
+        """
         if not self.commit_on_valid:
-            raise ImproperlyConfigured('You must override %(cls)s.save_formset'
-                                       ' if attribute %(cls)s.commit_on_valid '
-                                       'is set.' %
-                                       {'cls': self.__class__.__name__})
+            raise ImproperlyConfigured(
+                'You must override %(cls)s.save_formset if attribute '
+                '%(cls)s.commit_on_valid is set.' %{
+                    'cls': self.__class__.__name__
+                }
+            )
 
     def handle_formset_error(self, formset_error):
         messages.error(self.request, formset_error)
