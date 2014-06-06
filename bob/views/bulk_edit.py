@@ -50,28 +50,30 @@ class BulkEditBase(TemplateView):
         FormSet = self.get_formset()
         formset = FormSet(queryset=queryset)
         self.initial_forms(formset, queryset)
-        return self.render_to_response(self.get_context_data(formset=formset))
+        kwargs.update({'formset': formset})
+        return self.render_to_response(self.get_context_data(*args, **kwargs))
 
     def post(self, request, *args, **kwargs):
         FormSet = self.get_formset()
         formset = FormSet(request.POST)
         if formset.is_valid():
             instances = formset.save(commit=self.commit_on_valid)
-            if self.commit_on_valid:
+            if not self.commit_on_valid:
                 self.save_formset(instances, formset)
             messages.success(request, _('Changes saved.'))
             return HttpResponseRedirect(self.get_success_url())
         self.handle_formset_error(formset.get_form_error())
-        return self.render_to_response(self.get_context_data(formset=formset))
+        kwargs.update({'formset': formset})
+        return self.render_to_response(self.get_context_data(*args, **kwargs))
 
-    def get_context_data(self, **kwargs):
-        context = super(BulkEditBase, self).get_context_data(**kwargs)
+    def get_context_data(self, *args, **kwargs):
+        context = super(BulkEditBase, self).get_context_data(*args, **kwargs)
         context.update(kwargs)
         return context
 
     def get_success_url(self):
         if not self.success_url:
-            return '..'
+            return self.request.get_full_path()
         return self.success_url
 
     def get_form_bulk(self):
