@@ -23,21 +23,25 @@ MAX_BULK_EDIT_SIZE = getattr(settings, 'MAX_BULK_EDIT_SIZE', 40)
 
 
 class BulkEditBase(TemplateView):
-    """
-    Base view for bulk edit.
+    """Base view for bulk edit. This class is very helpful - handle any formset
+    from any model. Formset is automaticly generated from model or queryset.
+    Additionally you must specified class form for forms which display in
+    formset (in simplest case it is ``ModelForm``).
 
     Example of use:
+    .. code-block:: python
+        UserBulkEdit(BulkEditBase):
+            template_name = 'bulk_edit.html'
+            model = User
+            form_bulk = UserForm
 
-        >>> UserBulkEdit(BulkEditBase):
-        >>>     model = User
-        >>>     form_bulk = UserForm
+    or
 
-        or
-
-        >>> UserBulkEdit(BulkEditBase):
-        >>>     queryset = User.objects.filter(is_active=False)
-        >>>     form_bulk = UserForm
-
+    .. code-block:: python
+        UserBulkEdit(BulkEditBase):
+            template_name = 'bulk_edit.html'
+            queryset = User.objects.filter(is_active=False)
+            form_bulk = UserForm
     """
     commit_on_valid = True
     form_bulk = None
@@ -46,9 +50,13 @@ class BulkEditBase(TemplateView):
     model = None
     queryset = None
     success_url = None
+    invalid_url = None
 
     def initial_forms(self, formset, queryset):
-        """
+        """Initial forms in formset before render in page. You can manipulate
+        fields in forms (eg. change widget, set default value depends on
+        queryset, etc).
+
         :param formset: formset with generated forms
         :param queryset:
         """
@@ -64,7 +72,7 @@ class BulkEditBase(TemplateView):
                 )
             elif not objects_count:
                 messages.warning(request, _('Nothing to edit.'))
-            return HttpResponseRedirect('..')
+            return HttpResponseRedirect(self.get_invalid_url())
         FormSet = self.get_formset()
         formset = FormSet(queryset=queryset)
         self.initial_forms(formset, queryset)
@@ -90,17 +98,28 @@ class BulkEditBase(TemplateView):
         return context
 
     def get_success_url(self):
-        """Redirect after send formset."""
+        """Redirect after successfully send formset.
+
+        :return: returns URL (``str``)
+        """
         if not self.success_url:
             return self.request.get_full_path()
         return self.success_url
 
-    def get_form_bulk(self):
-        """
-        Attribute form_bulk is required. If yours form is lazy or
-        dynamic generated you could override this method.
+    def get_invalid_url(self):
+        """Redirect after send invalid or empty formset.
 
-        :return: standar django form class
+        :return: returns URL (``str``)
+        """
+        if not self.invalid_url:
+            return '..'
+        return self.invalid_url
+
+    def get_form_bulk(self):
+        """Attribute form_bulk is required. If yours form is lazy or dynamic
+        generated you can override this method.
+
+        :return: standard django form class
         """
         if not self.form_bulk:
             raise ImproperlyConfigured(
@@ -142,15 +161,22 @@ class BulkEditBase(TemplateView):
         return int_ids
 
     def save_formset(self, instances, formset):
-        """
-        If commit_on_valid is set to `False` then this method will be required.
-        If you override this method you must save instances manually (if you
-        want of course).
+        """If commit_on_valid is set to ``False`` then this method will be
+        required. If you override this method you must save instances manually
+        (if you want of course).
+
+        .. note::
+            Please use context manager ``transaction.commit_on_success()`` from
+            ``from django.db import transaction`` where you save instances
+            to database.
+
+        :param instances: list of objects
+        :param formset: formset
         """
         if not self.commit_on_valid:
             raise ImproperlyConfigured(
                 'You must override %(cls)s.save_formset if attribute '
-                '%(cls)s.commit_on_valid is set.' %{
+                '%(cls)s.commit_on_valid is set.' % {
                     'cls': self.__class__.__name__
                 }
             )
