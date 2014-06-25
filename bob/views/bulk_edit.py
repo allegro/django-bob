@@ -19,9 +19,6 @@ from django.views.generic import TemplateView
 logger = logging.getLogger(__name__)
 
 
-MAX_BULK_EDIT_SIZE = getattr(settings, 'MAX_BULK_EDIT_SIZE', 40)
-
-
 class BulkEditBase(TemplateView):
     """Base view for bulk edit. This class is very helpful - handle any formset
     from any model. Formset is automaticly generated from model or queryset.
@@ -62,13 +59,14 @@ class BulkEditBase(TemplateView):
         """
 
     def get(self, request, *args, **kwargs):
+        max_bulk_edit_size = getattr(settings, 'MAX_BULK_EDIT_SIZE', 40)
         queryset = self.get_queryset(*args, **kwargs)
         objects_count = queryset.count()
-        if not (0 < objects_count <= MAX_BULK_EDIT_SIZE):
-            if objects_count > MAX_BULK_EDIT_SIZE:
+        if not (0 < objects_count <= max_bulk_edit_size):
+            if objects_count > max_bulk_edit_size:
                 messages.warning(
                     request,
-                    _('You can edit max {} items'.format(MAX_BULK_EDIT_SIZE)),
+                    _('You can edit max {} items'.format(max_bulk_edit_size)),
                 )
             elif not objects_count:
                 messages.warning(request, _('Nothing to edit.'))
