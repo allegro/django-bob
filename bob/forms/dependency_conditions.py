@@ -28,16 +28,24 @@ def first_letter_lower(name):
 
 
 class DependencyCondition(object):
-    """Each dependency should have defined trigger condition.
+    """Base abstract class for each dependency.
+
+    It should have defined met function and get_js_format if it's unusual.
     """
     def met(self, value):
+        """Return ``True`` if value met condition.
+
+        :param value: master field value.
+        """
         raise NotImplementedError
 
     def get_js_format(self):
+        """Return list with condition definition."""
         return [first_letter_lower(self.__class__.__name__)]
 
 
 class ArgumentedCondition(DependencyCondition):
+    """Abstract class for condition with argument."""
     def __init__(self, value):
         self.value = value
 
@@ -53,20 +61,24 @@ class ArgumentedCondition(DependencyCondition):
 
 
 class Any(DependencyCondition):
+    """Condition for any ``master.value`` (even empty)."""
     def met(self, val):
         return True
 
 
 class Exact(ArgumentedCondition):
+    """Condition for ``master.value`` equals ``value``."""
     def met(self, val):
         return format_val_for_js(self.value) == format_val_for_js(val)
 
 
 class MemberOf(ArgumentedCondition):
+    """Condition for ``master.value`` is in ``value``."""
     def met(self, val):
         return format_val_for_js(val) in format_val_for_js(self.value)
 
 
 class NotEmpty(DependencyCondition):
+    """Condition for ``master.value`` is not empty."""
     def met(self, val):
         return val != "" and val is not None

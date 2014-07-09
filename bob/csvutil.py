@@ -17,6 +17,7 @@ import csv
 
 from django.http import HttpResponse
 
+
 class excel_semicolon(csv.excel):
     delimiter = b';'
 
@@ -33,6 +34,7 @@ class UTF8Recoder:
 
     def next(self):
         return self.reader.next().encode("utf-8")
+
 
 class UnicodeReader:
     """
@@ -82,7 +84,7 @@ class UnicodeWriter:
             self.writerow(row)
 
 
-def make_csv_response(data=[], filename='export.csv'):
+def make_csv_response(data=[], filename='export.csv', encoding='cp1250'):
     """
     Create a HTTP response for downloading a CSV file with provided data.
 
@@ -99,7 +101,9 @@ def make_csv_response(data=[], filename='export.csv'):
     """
 
     f = cStringIO.StringIO()
-    UnicodeWriter(f).writerows((unicode(item) for item in row) for row in data)
+    UnicodeWriter(f, encoding=encoding).writerows(
+        (unicode(item) for item in row) for row in data
+    )
     response = HttpResponse(f.getvalue(), content_type='application/csv')
     disposition = 'attachment; filename=%s' % filename
     response['Content-Disposition'] = disposition

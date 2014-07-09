@@ -56,6 +56,12 @@ def main_menu(items, selected, title=None, search=None, white=False,
         }
 
 
+@register.simple_tag
+def render_cell(column, row):
+    """Render the cell for a given column and row."""
+    return column.render_cell(row)
+
+
 @register.inclusion_tag('bob/tab_menu.html')
 def tab_menu(items, selected, side=None):
     """
@@ -126,8 +132,10 @@ def pagination(page, show_all=False, show_csv=False,
         }
     paginator = page.paginator
     page_no = page.number
-    pages = paginator.page_range[max(0, page_no - 1 - neighbors):
-    min(paginator.num_pages, page_no + neighbors)]
+    pages = paginator.page_range[
+        max(0, page_no - 1 - neighbors):
+        min(paginator.num_pages, page_no + neighbors)
+    ]
 
     if 1 not in pages:
         pages.insert(0, 1)
@@ -151,8 +159,16 @@ def pagination(page, show_all=False, show_csv=False,
         'show_csv': show_csv,
         'fugue_icons': fugue_icons,
         'url_query': url_query,
-        'url_previous_page': changed_url(url_query, query_variable_name, page_no-1),
-        'url_next_page': changed_url(url_query, query_variable_name, page_no+1),
+        'url_previous_page': changed_url(
+            url_query,
+            query_variable_name,
+            page_no - 1
+        ),
+        'url_next_page': changed_url(
+            url_query,
+            query_variable_name,
+            page_no + 1
+        ),
         'url_pages': url_pages,
         'url_all': changed_url(url_query, query_variable_name, 0),
         'export_variable_name': export_variable_name,
@@ -235,6 +251,17 @@ def form(form, action="", method="POST", fugue_icons=False,
     }
 
 
+@register.inclusion_tag('bob/form_as_fieldsets.html')
+def form_as_fieldsets(form_instance, *args, **kwargs):
+    if not getattr(form_instance.Meta, 'fieldset', None):
+        raise Exception(
+            "{}.Meta.fieldset attribute is UNDEFINED or EMPTY".format(
+                repr(form_instance)
+            )
+        )
+    return form(form_instance, *args, **kwargs)
+
+
 @register.inclusion_tag('bob/form.html')
 def form_horizontal(*args, **kwargs):
     return form(*args, **kwargs)
@@ -252,14 +279,25 @@ def table_header(columns=None, url_query=None, sort=None, fugue_icons=False,
     :param sort: means that the column is now sorted
     :param fugue_icons: Whether to use Fugue icons or Bootstrap icons.
 
+    show_conditions field on column item - func and args which determines
+    whether the column is to be displayed.
     """
+    new_columns = []
+    for column in columns:
+        if isinstance(column.show_conditions, tuple):
+            func, arg = column.show_conditions
+            if func(arg):
+                new_columns.append(column)
+        else:
+            new_columns.append(column)
     return {
-        'columns': columns,
+        'columns': new_columns,
         'sort': sort,
         'url_query': url_query,
         'fugue_icons': fugue_icons,
         'sort_variable_name': sort_variable_name,
     }
+
 
 @register.simple_tag
 def bob_sort_url(query, field, sort_variable_name, type):
@@ -272,6 +310,7 @@ def bob_sort_url(query, field, sort_variable_name, type):
     elif type == 'asc':
         query[sort_variable_name] = field
     return query.urlencode()
+
 
 @register.simple_tag
 def bob_export_url(query, value, export_variable_name='export'):
@@ -290,6 +329,7 @@ def bob_export_url(query, value, export_variable_name='export'):
             pass
     return query.urlencode()
 
+
 @register.simple_tag
 def dependency_data(form):
     """Render the data-bob-dependencies tag if this is a DependencyForm"""
@@ -299,7 +339,13 @@ def dependency_data(form):
     return 'data-bob-dependencies="{0}"'.format(
         esc(json.dumps(form.get_dependencies_for_js())))
 
+
 @register.inclusion_tag('bob/field_wrapper.html')
 def field_wrapper(field):
     """Render the full control-group tag of a field."""
     return {'field': field}
+
+
+@register.filter
+def get_item(obj, key):
+    return obj[key]

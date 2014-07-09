@@ -17,6 +17,7 @@ Contents:
     menus
     icons
     forms
+    views
     utils
 
 

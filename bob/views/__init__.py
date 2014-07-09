@@ -1,2 +1,4 @@
 # -*- coding: utf-8 -*-
-from dependency import DependencyView
+"""Views usefull in advanced django forms."""
+
+from dependency import DependencyView  # noqa
