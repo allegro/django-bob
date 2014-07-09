@@ -4,7 +4,7 @@ Change Log
 1.8.0
 ~~~~~
 
-Released on July 20, 2014,
+Released on July 9, 2014,
 
 * Added bulk edit view
 * Changed default encoding to cp1250 in csv write
