@@ -102,6 +102,15 @@ class DataTableMixin(object):
         """Generate a list of columns used in csv file header"""
         return [col.header_name for col in self.columns if col.export]
 
+    def get_nested_field(self, obj, field):
+        nested_fields = field.split('__')
+        for nested_field in nested_fields:
+            try:
+                obj = getattr(obj, nested_field)
+            except AttributeError:
+                return ''
+        return obj
+
     def get_cell(self, obj, field, model):
         """Returns the contents of a cell
         :param obj: model instance
@@ -115,12 +124,7 @@ class DataTableMixin(object):
                 model._meta.get_field_by_name(field)[0].choices
                 cell = getattr(obj, 'get_' + field + '_display')()
             except (FieldDoesNotExist, AttributeError):
-                pass
-            if not cell:
-                try:
-                    cell = getattr(obj, field)
-                except AttributeError:
-                    pass
+                cell = self.get_nested_field(obj, field)
         return cell
 
     def get_context_data_paginator(self, **kwargs):
