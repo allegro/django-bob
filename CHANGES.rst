@@ -1,6 +1,14 @@
 Change Log
 ----------
 
+1.8.1
+~~~~~
+
+Released on July 30, 2014,
+
+* Fix nested field in CSV export
+
+
 1.8.0
 ~~~~~
 
