@@ -61,7 +61,7 @@ def main_menu(items, selected, title=None, search=None, white=False,
         'position': position,
         'white': bool(white),
         'title_url': title_url,
-        'class': ' '.join(klass)
+        'class': ' '.join(klass),
     }
 
 
