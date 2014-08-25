@@ -1,29 +1,26 @@
-<div class="
-    navbar
-    {%if not white %} navbar-inverse{% endif %}
-    {%if position == 'static' %} navbar-static-top{% endif %}
-    {%if position == 'fixed'  %} navbar-fixed-top{% endif %}
-    {%if position == 'bottom'  %} navbar-fixed-bottom{% endif %}
-"><div class="navbar-inner"><div class="container">
-    {% if title %}<a href="{{ title_url }}" class="brand">{{ title }}</a>{% endif %}
-    <ul class="nav">
-        {% for item in items %}
-        {%   if not item.kwargs.pull_right %}
-        {%     include 'bob/menu_item.html' with item=item selected=selected %}
-        {%   endif %}
-        {% endfor %}
-    </ul>
-    {% if search %}
-        <form class="navbar-search pull-right" action="{{ search }}">
-            <input class="search-query" placeholder="Search" name="q">
-        </form>
-    {% endif %}
-    <ul class="nav pull-right">
-        {% for item in items %}
-        {%   if item.kwargs.pull_right %}
-        {%     include 'bob/menu_item.html' with item=item selected=selected %}
-        {%   endif %}
-        {% endfor %}
-    </ul>
-</div></div></div>
-
+<div class="{{ class }}">
+    <div class="navbar-inner">
+        <div class="container">
+            {% if title %}<a href="{{ title_url }}" class="brand">{{ title }}</a>{% endif %}
+            <ul class="nav">
+                {% for item in items %}
+                    {% if not item.kwargs.pull_right %}
+                        {% include 'bob/menu_item.html' with item=item selected=selected %}
+                    {% endif %}
+                {% endfor %}
+            </ul>
+            {% if search %}
+                <form class="navbar-search pull-right" action="{{ search }}">
+                    <input class="search-query" placeholder="Search" name="q">
+                </form>
+            {% endif %}
+            <ul class="nav pull-right">
+                {% for item in items %}
+                    {% if item.kwargs.pull_right %}
+                        {% include 'bob/menu_item.html' with item=item selected=selected %}
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>

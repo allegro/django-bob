@@ -1,31 +1,38 @@
 {% load bob %}
 
+
 {%  if item.item_kind == 'separator' %}
 <li class="divider-vertical"></li>
+{%  elif item.item_kind == 'divider' %}
+<li class="divider"></li>
 {%  elif item.item_kind == 'header' %}
 <li class="nav-header">{{ item.label }}</li>
 {%  elif item.item_kind == 'link' %}
 <li class="
     {{ class_prefix|default:'menu-item' }}-{{ item.name|slugify }}
     {% if item.name == selected %}active{% endif %}
+    {% if item.kwargs.dropdown %}dropdown{% endif %}
 ">
-    <a href="{{ item.get_href }}">
+    <a href="{{ item.get_href }}"{% if item.kwargs.dropdown %} class="dropdown-toggle" data-toggle="dropdown"{% endif %}>
         {% for i in item.kwargs.indent %}&nbsp;&nbsp;&nbsp;&nbsp;{% endfor %}
         {% if item.subitems and item.kwargs.collapsible %}
         <b href="#"
-            class="fugue-icon menu-expand {% if item.kwargs.collapsed %}fugue-toggle-small-expand{% else %}fugue-toggle-small{% endif %}"
-            data-toggle="collapse"
-            data-target="#subitems-{{ item.name|slugify }}"
-            onclick="$(this).toggleClass('fugue-toggle-small-expand fugue-toggle-small'); return false"
-            style="margin-left: -16px"
-         >+</b>{% endif %}{% if item.kwargs.fugue_icon %}<i class="fugue-icon {{ item.kwargs.fugue_icon }}"></i>
+             class="fugue-icon menu-expand {% if item.kwargs.collapsed %}fugue-toggle-small-expand{% else %}fugue-toggle-small{% endif %}"
+             data-toggle="collapse"
+             data-target="#subitems-{{ item.name|slugify }}"
+             onclick="$(this).toggleClass('fugue-toggle-small-expand fugue-toggle-small'); return false"
+             style="margin-left: -16px"
+          >+</b>{% endif %}{% if item.kwargs.fugue_icon %}<i class="fugue-icon {{ item.kwargs.fugue_icon }}"></i>
         {% elif item.kwargs.icon %}
             <i class="icon-{{ item.kwargs.icon }} icon-white"></i>
         {% endif %}
-        {{ item.label }}
+        {{ item.label }}{% if item.kwargs.dropdown %}<b class="caret"></b>{% endif %}
     </a>
     {% if item.subitems %}
-    {% sidebar_menu_subitems item selected %}
+        {% if item.kwargs.dropdown %}
+            {% dropdown_items item %}
+        {% else %}
+            {% sidebar_menu_subitems item selected %}
+        {% endif %}
     {% endif %}
-</li>
 {%  endif %}

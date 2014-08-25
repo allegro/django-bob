@@ -1,6 +1,13 @@
 Change Log
 ----------
 
+develop
+~~~~~~~
+* Added dropdown menu
+* Added divider
+* Move some logic layer from template to templatetag
+
+
 1.8.1
 ~~~~~
 

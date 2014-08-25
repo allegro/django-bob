@@ -64,6 +64,10 @@ class Separator(object):
     item_kind = 'separator'
 
 
+class Divider(object):
+    item_kind = 'divider'
+
+
 class MenuHeader(object):
     """
     Show a header in menus.

@@ -44,6 +44,14 @@ def main_menu(items, selected, title=None, search=None, white=False,
     :param white: If True, the menu bar will be white.
     :param position: Empty, or one of ``'fixed'``, ``'static'``, ``'bottom'``.
     """
+    positions = {
+        'static': 'navbar-static-top',
+        'fixed': 'navbar-fixed-top',
+        'bottom': 'navbar-fixed-bottom',
+    }
+    klass = ['navbar', positions.get(position, '')]
+    if not white:
+        klass.append('navbar-inverse')
 
     return {
         'items': items,
@@ -53,7 +61,23 @@ def main_menu(items, selected, title=None, search=None, white=False,
         'position': position,
         'white': bool(white),
         'title_url': title_url,
-        }
+        'class': ' '.join(klass),
+    }
+
+
+@register.inclusion_tag('bob/dropdown_items.html')
+def dropdown_items(items, white=False):
+    """
+    Render dropdown items.
+
+    :param items: The list of :class:`bob.menu.MenuItem` instances to show.
+    :param title: The title to show in the menu bar.
+    :param white: If True, the menu bar will be white.
+    """
+    return {
+        'items': items.subitems,
+        'white': bool(white),
+    }
 
 
 @register.simple_tag
@@ -77,7 +101,7 @@ def tab_menu(items, selected, side=None):
         'items': items,
         'selected': selected,
         'side': side,
-        }
+    }
 
 
 @register.inclusion_tag('bob/sidebar_menu.html')
@@ -92,7 +116,7 @@ def sidebar_menu(items, selected):
     return {
         'items': items,
         'selected': selected,
-        }
+    }
 
 
 @register.inclusion_tag('bob/sidebar_menu_subitems.html')
@@ -104,7 +128,7 @@ def sidebar_menu_subitems(item, selected):
     return {
         'item': item,
         'selected': selected,
-        }
+    }
 
 
 @register.inclusion_tag('bob/pagination.html')
