@@ -5,6 +5,9 @@ from bob.test_djid.models import Person
 
 class PersonsGrid(Djid):
 
+    class Meta:
+        djid_id = 'persons'
+
     query_set = Person.objects.all()
 
     first_name = CharColumn()

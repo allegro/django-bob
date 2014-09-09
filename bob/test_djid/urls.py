@@ -1,8 +1,9 @@
 from django.conf.urls import patterns, include, url
 
+from bob.djid import Djid
 from bob.test_djid.views import PersonsGrid
 
 urlpatterns = patterns(
     '',
-    url(r'^persons_djid/', PersonsGrid.get_ajax_data),
+    url(r'^djid/(?P<djid_id>[A-Za-z0-9]+)/$', Djid.dispatcher),
 )

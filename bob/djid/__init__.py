@@ -6,18 +6,32 @@ from django.http import HttpResponse
 
 from bob.djid.column import Column
 
+class DefaultMeta(object):
+    """Default Meta for a Djid"""
+
 
 class DjidMeta(type):
     """A djid metaclass."""
+
+    __registry__ = {}
     
     def __init__(cls, clsname, bases, dict_):
-        columns = collections.OrderedDict()
+        column_dict = collections.OrderedDict()
+        meta = dict_.get('Meta')
+        if not meta:
+            meta = DefaultMeta()
         for k, v in dict_.items():
             if isinstance(v, Column):
                 v.name = k
-                columns[k] = v
-        cls.__columns__ = columns
+                column_dict[k] = v
+        meta.column_dict = column_dict
+        if meta:
+            try:
+                cls.__registry__[meta.djid_id] = cls
+            except AttributeError:
+                pass
         super(DjidMeta, cls).__init__(clsname, bases, dict_)
+        cls._meta = meta
 
 
 class Djid(object):
@@ -45,7 +59,7 @@ class Djid(object):
     def format_ajax_row(cls, model):
         """Returns a row formatted for AJAX response."""
         cell = [] 
-        for field in cls.__columns__.values():
+        for field in cls._meta.column_dict.values():
             cell.append(field.format_ajax_value(model))
         return {'id': model.id, 'cell': cell}
 
@@ -68,3 +82,8 @@ class Djid(object):
             content_type='application/json',
         )
 
+    @classmethod
+    def dispatcher(cls, request, djid_id):
+        """Dispatching view that passes control to get_ajax_data in
+        an appropriate djid"""
+        return cls.__registry__[djid_id].get_ajax_data(request)
