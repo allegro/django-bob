@@ -118,6 +118,7 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'bob.djid',
     'bob.test_djid',
     'csvimport',
     # Uncomment the next line to enable the admin:

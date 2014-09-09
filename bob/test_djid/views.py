@@ -3,6 +3,8 @@ from bob.djid import Djid
 from bob.djid.column import CharColumn
 from bob.test_djid.models import Person
 
+from django.views.generic import TemplateView
+
 class PersonsGrid(Djid):
 
     class Meta:
@@ -12,3 +14,8 @@ class PersonsGrid(Djid):
 
     first_name = CharColumn()
     last_name = CharColumn()
+
+
+class Homepage(TemplateView):
+
+    template_name = 'homepage.html'
