@@ -8,3 +8,7 @@ class CharColumn(Column):
         """Returns a value to be sent via AJAX. It should be an object dumpable
         to JSON."""
         return getattr(model, self.name)
+
+    def get_model(self):
+        """Return a dict for jqgrid colModel"""
+        return {"name": self.name}

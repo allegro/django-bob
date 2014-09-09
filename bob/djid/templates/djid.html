@@ -1,1 +1,23 @@
-{{meta.djid_id}}
+<table id="{{meta.djid_id}}"><tr><td></td></tr></table> 
+ 
+<script type="text/javascript">
+$(function () {
+    $("#{{meta.djid_id}}").jqGrid({
+        url: "/djid/{{meta.djid_id}}",
+        datatype: "json",
+        mtype: "GET",
+        colNames: {{ djid.col_names|safe }},
+        colModel: {{ djid.col_model|safe }},
+        // colModel: [
+        //     { name: "invid", width: 55 },
+        //     { name: "invdate", width: 90 },
+        //     { name: "amount", width: 80, align: "right" },
+        //     { name: "tax", width: 80, align: "right" },
+        //     { name: "total", width: 80, align: "right" },
+        //     { name: "note", width: 150, sortable: false }
+        // ],
+        // pager: "#pager",
+        scroll: true
+    }); 
+}); 
+</script>

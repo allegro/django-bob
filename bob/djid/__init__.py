@@ -87,3 +87,13 @@ class Djid(object):
         """Dispatching view that passes control to get_ajax_data in
         an appropriate djid"""
         return cls.__registry__[djid_id].get_ajax_data(request)
+
+    @classmethod
+    def col_names(cls):
+        return json.dumps(list(cls._meta.column_dict.keys()))
+
+    @classmethod
+    def col_model(cls):
+        return json.dumps([
+            column.get_model() for column in cls._meta.column_dict.values()
+        ])
