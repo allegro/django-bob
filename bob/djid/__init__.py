@@ -52,8 +52,17 @@ class Djid(object):
 
     @classmethod
     def get_filtered_query_set(cls, request):
-        """Returns a filtered query set."""
-        return cls.get_full_query_set()
+        """Returns a filtered and ordered query set."""
+        query_set = cls.get_full_query_set()
+        order_string = request.GET['sidx'] + request.GET['sord']
+        if order_string != ' ':
+            order_pairs = zip(*([iter(order_string.split(' '))] * 2))
+            order_args = [
+                ('-' if direction == 'desc' else '') + column
+                for column, direction in order_pairs
+            ]
+            query_set = query_set.order_by(*order_args)
+        return query_set
 
     @classmethod
     def format_ajax_row(cls, model):

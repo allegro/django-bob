@@ -120,7 +120,6 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'bob.djid',
     'bob.test_djid',
-    'csvimport',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
