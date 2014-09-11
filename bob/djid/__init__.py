@@ -99,7 +99,9 @@ class Djid(object):
 
     @classmethod
     def col_names(cls):
-        return json.dumps(list(cls._meta.column_dict.keys()))
+        return json.dumps([
+            column.label for column in cls._meta.column_dict.values()
+        ])
 
     @classmethod
     def col_model(cls):

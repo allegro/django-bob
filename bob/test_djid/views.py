@@ -1,4 +1,4 @@
-# Create your views here.
+# vim: set fileencoding=utf-8
 from bob.djid import Djid
 from bob.djid.column import CharColumn
 from bob.test_djid.models import Person
@@ -12,8 +12,8 @@ class PersonsGrid(Djid):
 
     query_set = Person.objects.all()
 
-    first_name = CharColumn()
-    last_name = CharColumn()
+    first_name = CharColumn(label='Imię')
+    last_name = CharColumn(label='Nazwisko')
 
 
 class Homepage(TemplateView):

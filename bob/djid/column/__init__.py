@@ -1,6 +1,9 @@
 class Column(object):
     """A column object."""
 
+    def __init__(self, label):
+        self.label = label
+
 class CharColumn(Column):
     """A simple column that handles character data from a single field."""
 
