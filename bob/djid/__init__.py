@@ -5,6 +5,8 @@ from django.core.paginator import Paginator
 from django.http import HttpResponse
 
 from bob.djid.column import Column
+from bob.djid.util import PEP3115
+
 
 class DefaultMeta(object):
     """Default Meta for a Djid"""
@@ -20,10 +22,21 @@ class DjidMeta(type):
         meta = dict_.get('Meta')
         if not meta:
             meta = DefaultMeta()
-        for k, v in dict_.items():
-            if isinstance(v, Column):
-                v.name = k
-                column_dict[k] = v
+        def mount_column(k, v):
+            v.name = k
+            column_dict[k] = v
+        if PEP3115:
+            for k, v in dict_.items():
+                if isinstance(v, Column):
+                    mount_column(k, v)
+        else:
+            dict_columns = [
+                (k, v) for k, v in dict_.items() if isinstance(v, Column)
+            ]
+            dict_columns.sort(key=lambda item: item[1].counter)
+            for k, v in dict_columns:
+                mount_column(k, v)
+
         meta.column_dict = column_dict
         if meta:
             try:
@@ -32,6 +45,9 @@ class DjidMeta(type):
                 pass
         super(DjidMeta, cls).__init__(clsname, bases, dict_)
         cls._meta = meta
+
+    def __prepare__(cls, name, bases):
+        return collections.OrderedDict()
 
 
 class Djid(object):

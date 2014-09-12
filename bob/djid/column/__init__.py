@@ -1,8 +1,19 @@
+from bob.djid.util import PEP3115
+
+
+if not PEP3115:
+    _counter = 0
+
+
 class Column(object):
     """A column object."""
 
     def __init__(self, label):
+        global _counter
         self.label = label
+        if not PEP3115:
+            self.counter = _counter
+            _counter += 1
 
     def format_ajax_value(self, model):
         """Returns a value to be sent via AJAX. It should be an object dumpable
