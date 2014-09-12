@@ -15,3 +15,4 @@ class Person(models.Model):
     phone2 = models.CharField(max_length=64)
     email = models.CharField(max_length=64)
     web = models.CharField(max_length=64)
+    registered = models.DateTimeField()
