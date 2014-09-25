@@ -1,11 +1,11 @@
 {% if side %}
-<div class="tabs-{{ side }}">
+    <div class="tabs-{{ side }}">
 {% endif %}
-<ul class="nav nav-tabs">
-    {% for item in items %}
-    {%   include 'bob/menu_item.html' with item=item selected=selected %}
-    {% endfor %}
-</ul>
+    <ul class="nav nav-tabs">
+        {% for item in items %}
+            {% include 'bob/menu_item.html' with item=item selected=selected %}
+        {% endfor %}
+    </ul>
 {% if side %}
-</div>
+    </div>
 {% endif %}

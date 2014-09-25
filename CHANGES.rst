@@ -1,6 +1,15 @@
 Change Log
 ----------
 
+1.9.0
+~~~~~
+Released on September 25, 2014,
+
+* Added dropdown menu
+* Added divider
+* Move some logic layer from template to templatetag
+
+
 1.8.1
 ~~~~~
 
