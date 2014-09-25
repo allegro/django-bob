@@ -4,11 +4,12 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
+import json
+
 from django import forms
 from django.utils.safestring import mark_safe
 from django.forms.util import flatatt
 from django.utils.html import escape
-from django.utils import simplejson as json
 
 
 class AutocompleteWidget(forms.Select):
