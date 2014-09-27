@@ -4,7 +4,7 @@ import json
 from django.core.paginator import Paginator
 from django.http import HttpResponse
 
-from bob.djid.column import Column
+from bob.djid.column import Column, registry
 from bob.djid.util import PEP3115
 
 
@@ -25,6 +25,34 @@ class DjidMeta(type):
         def mount_column(k, v):
             v.name = k
             column_dict[k] = v
+        # I add getattr very reluctantly here, as this is prone to The Great
+        # Python Design Flaw. But one can use generators instead of properties
+        # so it shouldn't be the case here
+        columns = getattr(meta, 'columns', None)
+        if columns:
+            cls.init_from_list(meta, columns, dict_, mount_column)
+        else:
+            cls.init_from_dict(dict_, mount_column)
+        meta.column_dict = column_dict
+        if meta:
+            try:
+                cls.__registry__[meta.djid_id] = cls
+            except AttributeError:
+                pass
+        super(DjidMeta, cls).__init__(clsname, bases, dict_)
+        cls._meta = meta
+
+    def init_from_list(cls, meta, columns, dict_, mount_column):
+        for column_name in columns:
+            if column_name in dict_:
+                mount_column(column_name, dict_[column_name])
+            else:
+                field = meta.Model._meta.get_field(column_name)
+                mount_column(column_name, registry.get_column(field))
+
+    def init_from_dict(cls, dict_, mount_column):
+        """Mounts the colummns from class dict. Used when no column list
+        is provided."""
         if PEP3115:
             for k, v in dict_.items():
                 if isinstance(v, Column):
@@ -36,15 +64,6 @@ class DjidMeta(type):
             dict_columns.sort(key=lambda item: item[1].counter)
             for k, v in dict_columns:
                 mount_column(k, v)
-
-        meta.column_dict = column_dict
-        if meta:
-            try:
-                cls.__registry__[meta.djid_id] = cls
-            except AttributeError:
-                pass
-        super(DjidMeta, cls).__init__(clsname, bases, dict_)
-        cls._meta = meta
 
     def __prepare__(cls, name, bases):
         return collections.OrderedDict()
