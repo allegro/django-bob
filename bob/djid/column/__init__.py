@@ -1,4 +1,6 @@
 from django.db.models.fields import Field, CharField, DateTimeField
+
+
 from bob.djid.util import PEP3115
 
 
@@ -9,9 +11,10 @@ if not PEP3115:
 class Column(object):
     """A column object."""
 
-    def __init__(self, label):
+    def __init__(self, label, as_link=False):
         global _counter
         self.label = label
+        self.as_link = as_link
         if not PEP3115:
             self.counter = _counter
             _counter += 1
@@ -19,10 +22,20 @@ class Column(object):
     def format_ajax_value(self, model):
         """Returns a value to be sent via AJAX. It should be an object dumpable
         to JSON."""
+        if self.as_link:
+            return (model.get_absolute_url(), self.format_label(model))
+        else:
+            return self.format_label(model)
 
     def get_model(self):
         """Return a dict for jqgrid colModel"""
-        return {"name": self.name}
+        result = {"name": self.name}
+        if self.as_link:
+            result['formatter'] = 'djid_link'
+        return result
+
+    def format_label(self):
+        """Return the text to be displayed in the cell."""
 
     @classmethod
     def from_field(cls, field, *args, **kwargs_override):
@@ -85,7 +98,7 @@ registry = _ColumnRegistry()
 class CharColumn(Column):
     """A simple column that handles character data from a single field."""
 
-    def format_ajax_value(self, model):
+    def format_label(self, model):
         return getattr(model, self.name)
 
 registry.register(CharField, CharColumn)
@@ -94,7 +107,7 @@ registry.register(CharField, CharColumn)
 class DateTimeColumn(Column):
     """A column that displays datetime using the jqGrid l10n mechanisms."""
 
-    def format_ajax_value(self, model):
+    def format_label(self, model):
         return getattr(model, self.name).isoformat()
 
     def get_model(self):
