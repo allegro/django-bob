@@ -1,24 +1,36 @@
 <table id="{{meta.djid_id}}"><tr><td></td></tr></table> 
+<div id="{{djid_id}}-pager"></div>
  
 <script type="text/javascript">
-$(function () {
-    $("#{{meta.djid_id}}").jqGrid({
-        url: "/djid/{{meta.djid_id}}",
-        datatype: "json",
-        mtype: "GET",
-        colNames: {{ djid.col_names|safe }},
-        colModel: {{ djid.col_model|safe }},
-        multiSort: true,
-        // colModel: [
-        //     { name: "invid", width: 55 },
-        //     { name: "invdate", width: 90 },
-        //     { name: "amount", width: 80, align: "right" },
-        //     { name: "tax", width: 80, align: "right" },
-        //     { name: "total", width: 80, align: "right" },
-        //     { name: "note", width: 150, sortable: false }
-        // ],
-        // pager: "#pager",
-        scroll: true
+(function ($) {
+    $(function () {
+        var grid;
+        grid = $("#{{meta.djid_id}}").jqGrid({
+            url: "/djid/{{meta.djid_id}}/",
+            datatype: "json",
+            mtype: "GET",
+            colNames: {{ djid.col_names|safe }},
+            colModel: {{ djid.col_model|safe }},
+            multiSort: true,
+            pager: "#{{djid_id}}-pager",
+            scroll: true,
+        }); 
+        grid.navGrid('#{{djid_id}}-pager', {
+            'edit': false,
+            'add': false,
+            'del': false,
+            'search': false
+        });
+        grid.filterToolbar();
+        grid.get(0).toggleToolbar();
+        grid.navButtonAdd('#{{djid_id}}-pager', {
+            caption: '',
+            buttonicon: 'ui-icon-search',
+            onClickButton: function () {
+                this.toggleToolbar();
+            }
+        });
+        $("{{meta.djid_id}}").filterGrid = $("{{meta.djid_id}}").filterToolbar;
     }); 
-}); 
+})(jQuery);
 </script>

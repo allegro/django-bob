@@ -14,6 +14,8 @@ class Column(object):
         If None, the links will be present if ``get_absolute_url`` is defined
     """
 
+    filtered = False
+
     def __init__(self, label, as_link=False):
         global _counter
         self.label = label
@@ -36,6 +38,7 @@ class Column(object):
         result = {"name": self.name}
         if self.as_link:
             result['formatter'] = 'djid_link'
+        result['search'] = self.filtered
         return result
 
     def format_label(self, model):
@@ -54,6 +57,9 @@ class Column(object):
         e. g. to prefetch the needed data.
         """
         return qs
+
+    def handle_filters(self, qs, get_dict):
+        raise NotImplementedError
 
 
 class _ColumnRegistry(object):
@@ -108,8 +114,17 @@ registry = _ColumnRegistry()
 class CharColumn(Column):
     """A simple column that handles character data from a single field."""
 
+    filtered = True
+
     def format_label(self, model):
         return getattr(model, self.name)
+
+    def handle_filters(self, qs, get_dict):
+        value = get_dict.get(self.name)
+        if value is not None:
+            return qs.filter(**{self.name + '__icontains': value})
+        else:
+            return qs
 
 registry.register(CharField, CharColumn)
 

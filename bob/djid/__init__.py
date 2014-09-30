@@ -84,7 +84,7 @@ class Djid(object):
     def get_full_query_set(cls):
         """Return the whole, unfiltered and unpaginated query set."""
         queryset = cls._meta.Model.objects
-        qs = reduce (
+        queryset = reduce (
             lambda qs, col: col.process_queryset(qs),
             cls._meta.column_dict.values(),
             queryset,
@@ -94,7 +94,17 @@ class Djid(object):
     @classmethod
     def get_filtered_query_set(cls, request):
         """Returns a filtered and ordered query set."""
-        query_set = cls.get_full_query_set()
+        queryset = cls.get_full_query_set()
+        queryset = reduce (
+            lambda qs, col: (
+                col.handle_filters(qs, request.GET)
+                if col.filtered
+                else qs
+            ),
+            cls._meta.column_dict.values(),
+            queryset,
+        )
+        
         order_string = request.GET['sidx'] + request.GET['sord']
         if order_string != ' ':
             order_pairs = zip(*([iter(order_string.split(' '))] * 2))
@@ -102,8 +112,8 @@ class Djid(object):
                 ('-' if direction == 'desc' else '') + column
                 for column, direction in order_pairs
             ]
-            query_set = query_set.order_by(*order_args)
-        return query_set
+            queryset = queryset.order_by(*order_args)
+        return queryset
 
     @classmethod
     def format_ajax_row(cls, model):
