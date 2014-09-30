@@ -25,3 +25,6 @@ class Company(models.Model):
     """Test company object."""
     name = models.CharField(max_length=64)
     phone = models.CharField(max_length=64)
+
+    def get_absolute_url(self):
+        return reverse('company_view', kwargs={'company_id': self.pk})

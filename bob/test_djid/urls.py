@@ -1,7 +1,8 @@
 from django.conf.urls import patterns, include, url
 
 from bob.djid import Djid
-from bob.test_djid.views import Homepage, PersonView
+from bob.test_djid.views import Homepage, PersonView, CompanyView
+
 
 urlpatterns = patterns(
     '',
@@ -10,6 +11,11 @@ urlpatterns = patterns(
         r'^person/(?P<person_id>[0-9]+)/$',
         PersonView.as_view(),
         name='person_view',
+    ),
+    url(
+        r'^company/(?P<company_id>[0-9]+)/$',
+        CompanyView.as_view(),
+        name='company_view',
     ),
     url(r'^djid/(?P<djid_id>[A-Za-z0-9]+)/$', Djid.dispatcher),
 )

@@ -83,7 +83,13 @@ class Djid(object):
     @classmethod
     def get_full_query_set(cls):
         """Return the whole, unfiltered and unpaginated query set."""
-        return cls.query_set
+        queryset = cls._meta.Model.objects
+        qs = reduce (
+            lambda qs, col: col.process_queryset(qs),
+            cls._meta.column_dict.values(),
+            queryset,
+        )
+        return queryset
 
     @classmethod
     def get_filtered_query_set(cls, request):

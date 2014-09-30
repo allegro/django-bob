@@ -9,7 +9,10 @@ if not PEP3115:
 
 
 class Column(object):
-    """A column object."""
+    """A column object.
+        :param as_link: True or False to force creating links to related object.
+        If None, the links will be present if ``get_absolute_url`` is defined
+    """
 
     def __init__(self, label, as_link=False):
         global _counter
@@ -18,6 +21,7 @@ class Column(object):
         if not PEP3115:
             self.counter = _counter
             _counter += 1
+
 
     def format_ajax_value(self, model):
         """Returns a value to be sent via AJAX. It should be an object dumpable
@@ -34,7 +38,7 @@ class Column(object):
             result['formatter'] = 'djid_link'
         return result
 
-    def format_label(self):
+    def format_label(self, model):
         """Return the text to be displayed in the cell."""
 
     @classmethod
@@ -44,6 +48,12 @@ class Column(object):
         }
         call_kwargs.update(kwargs_override)
         return cls(label=field.verbose_name.capitalize())
+
+    def process_queryset(self, qs):
+        """The optional function that allows the column to modify the queryset
+        e. g. to prefetch the needed data.
+        """
+        return qs
 
 
 class _ColumnRegistry(object):
@@ -118,3 +128,33 @@ class DateTimeColumn(Column):
         return result
 
 registry.register(DateTimeField, DateTimeColumn)
+
+
+class ForeignColumn(Column):
+    """A column that displays the many-to-one related object.
+    :param label_field: The field to be used for labels.
+    :param label_function: The function to create labels. It receives two
+        arguments: the column object and the related object. By default it
+        would use ``label_field`` or ``str``
+    """
+
+    def __init__(self, label_field=None, label_function=None, *args, **kwargs):
+        self.label_field = label_field
+        self.label_function = label_function
+        super(ForeignColumn, self).__init__(*args, **kwargs)
+
+    def format_label(self, model):
+        if self.label_function is not None:
+            return self.label_function(self, model)
+        elif self.label_field is not None:
+            return getattr(model, self.label_field)
+        else:
+            return str(model)
+
+    def format_ajax_value(self, model):
+        return super(ForeignColumn, self).format_ajax_value(
+            getattr(model, self.name)
+        )
+
+    def process_queryset(self, qs):
+        return qs.select_related(self.name)
