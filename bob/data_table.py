@@ -167,7 +167,12 @@ class DataTableMixin(object):
             self.page_number = int(page)
         except ValueError:
             self.page_number = 1
-        self.paginator = Paginator(queryset, self.rows_per_page)
+        if self.page_number == 0:
+            # show all items on a single page
+            self.page_number = 1
+            self.paginator = Paginator(queryset, len(queryset))
+        else:
+            self.paginator = Paginator(queryset, self.rows_per_page)
         try:
             page_contents = self.paginator.page(self.page_number)
         except EmptyPage:

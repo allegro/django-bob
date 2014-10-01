@@ -1,6 +1,14 @@
 Change Log
 ----------
 
+1.9.1
+~~~~~
+Released on October 1, 2014,
+
+* Fix for 'show all items on a single page'
+* Fixed mismatched thead/tr tags in 'table_header.html'
+
+
 1.9.0
 ~~~~~
 Released on September 25, 2014,
