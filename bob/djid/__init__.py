@@ -11,7 +11,6 @@ from bob.djid.util import PEP3115
 class DefaultMeta(object):
     """Default Meta for a Djid"""
 
-
 class DjidMeta(type):
     """A djid metaclass."""
 
@@ -34,11 +33,10 @@ class DjidMeta(type):
         else:
             cls.init_from_dict(dict_, mount_column)
         meta.column_dict = column_dict
-        if meta:
-            try:
-                cls.__registry__[meta.djid_id] = cls
-            except AttributeError:
-                pass
+        try:
+            cls.__registry__[meta.djid_id] = cls
+        except AttributeError:
+            pass
         super(DjidMeta, cls).__init__(clsname, bases, dict_)
         cls._meta = meta
 
@@ -105,8 +103,11 @@ class Djid(object):
             queryset,
         )
         
-        order_string = request.GET['sidx'] + request.GET['sord']
-        if order_string != ' ':
+        order_string = (
+            request.GET.get('sidx', '') +
+            request.GET.get('sord', '')
+        )
+        if order_string and order_string != ' ':
             order_pairs = zip(*([iter(order_string.split(' '))] * 2))
             order_args = [
                 ('-' if direction == 'desc' else '') + column
