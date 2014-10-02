@@ -1,5 +1,6 @@
+"""Column definitions."""
+from django.db.models import Count
 from django.db.models.fields import Field, CharField, DateTimeField
-
 
 from bob.djid.util import PEP3115
 
@@ -178,10 +179,42 @@ class ForeignColumn(Column):
 class IntColumn(Column):
     """Column for integer values."""
 
+    filtered = True
+
     def format_label(self, model):
         return getattr(model, self.name)
 
     def handle_filters(self, qs, get_dict):
         value = get_dict.get(self.name)
-        if value is not None:
-            return qs.filter(**{self.name + int(value)})
+        if value is None:
+            return qs.all()
+        for operator, function, suffix in [
+                ('<=', qs.filter, '__lte'),
+                ('>=', qs.filter, '__gte'),
+                ('<>', qs.exclude, ''),
+                ('!=', qs.exclude, ''),
+                ('==', qs.filter, ''),
+                ('>', qs.filter, '__gt'),
+                ('<', qs.filter, '__lt'),
+                ('=', qs.filter, ''),
+        ]:
+            if value.startswith(operator):
+                return function(**{
+                    self.name + suffix:
+                    int(value[len(operator):])
+                })
+        return qs.filter(**{self.name: int(value)})
+
+
+class CountColumn(IntColumn):
+    """A column that counts related one-to-many or many-to-many objects.
+    :param relation: The relation to be counted. Without the _set postfix.
+    """
+
+    def __init__(self, relation, *args, **kwargs):
+        self.relation = relation
+        super(CountColumn, self).__init__(*args, **kwargs)
+
+    def process_queryset(self, qs):
+        return qs.annotate(**{self.name: Count(self.relation)})
+

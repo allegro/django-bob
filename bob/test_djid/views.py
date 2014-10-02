@@ -2,6 +2,7 @@
 from bob.djid import Djid
 from bob.djid.column import (
     CharColumn,
+    CountColumn,
     DateTimeColumn,
     ForeignColumn,
     IntColumn,
@@ -26,9 +27,19 @@ class PersonsGrid(Djid):
     score = IntColumn(label='Punkty')
 
 
-class Homepage(TemplateView):
+class CompanyGrid(Djid):
+    class Meta:
+        djid_id = 'companies'
+        Model = Company
+        columns = ['name', 'phone', 'person_count']
 
-    template_name = 'homepage.html'
+    person_count = CountColumn(relation='person', label='Persons')
+    
+
+
+class DisplayDjid(TemplateView):
+
+    template_name = 'display_djid.html'
 
 
 class PersonView(TemplateView):

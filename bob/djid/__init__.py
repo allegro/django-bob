@@ -114,6 +114,8 @@ class Djid(object):
                 for column, direction in order_pairs
             ]
             queryset = queryset.order_by(*order_args)
+        else:
+            queryset = queryset.all()
         return queryset
 
     @classmethod
