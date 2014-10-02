@@ -1,6 +1,11 @@
 # vim: set fileencoding=utf-8
 from bob.djid import Djid
-from bob.djid.column import CharColumn, DateTimeColumn, ForeignColumn
+from bob.djid.column import (
+    CharColumn,
+    DateTimeColumn,
+    ForeignColumn,
+    IntColumn,
+)
 from bob.test_djid.models import Person, Company
 
 from django.shortcuts import get_object_or_404
@@ -18,6 +23,7 @@ class PersonsGrid(Djid):
     last_name = CharColumn(label='Nazwisko', as_link=True)
     registered = DateTimeColumn(label='Zarejestrowany')
     company = ForeignColumn(label='Firma', label_field='name', as_link=True)
+    score = IntColumn(label='Punkty')
 
 
 class Homepage(TemplateView):

@@ -15,7 +15,8 @@ class Person(models.Model):
     email = models.CharField(max_length=64)
     web = models.CharField(max_length=64)
     registered = models.DateTimeField()
-    company = models.ForeignKey('Company', null=True)
+    company = models.ForeignKey('Company')
+    score = models.IntegerField(null=True)
 
     def get_absolute_url(self):
         return reverse('person_view', kwargs={'person_id': self.pk})

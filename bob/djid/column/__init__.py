@@ -173,3 +173,15 @@ class ForeignColumn(Column):
 
     def process_queryset(self, qs):
         return qs.select_related(self.name)
+
+
+class IntColumn(Column):
+    """Column for integer values."""
+
+    def format_label(self, model):
+        return getattr(model, self.name)
+
+    def handle_filters(self, qs, get_dict):
+        value = get_dict.get(self.name)
+        if value is not None:
+            return qs.filter(**{self.name + int(value)})
