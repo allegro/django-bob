@@ -217,4 +217,3 @@ class CountColumn(IntColumn):
 
     def process_queryset(self, qs):
         return qs.annotate(**{self.name: Count(self.relation)})
-

@@ -1,37 +1,17 @@
 <table id="{{meta.djid_id}}"><tr><td></td></tr></table> 
-<div id="{{djid_id}}-pager"></div>
+<div id="{{meta.djid_id}}-pager"></div>
  
 <script type="text/javascript">
-(function ($) {
-    $(function () {
-        var grid;
-        grid = $("#{{meta.djid_id}}").jqGrid({
-            url: "/djid/{{meta.djid_id}}/",
-            datatype: "json",
-            mtype: "GET",
-            colNames: {{ djid.col_names|safe }},
-            colModel: {{ djid.col_model|safe }},
-            multiSort: true,
-            pager: "#{{djid_id}}-pager",
-            scroll: true,
-            rowNum: {{ djid.page_size }}
+(function () {
+    require(['jquery', 'djid'], function($, Djid) {
+        $(function () {
+            var grid;
+            grid = new Djid.Djid('{{ meta.djid_id }}', {
+                colNames: {{ djid.col_names|safe }},
+                colModel: {{ djid.col_model|safe }},
+                rowNum: {{ djid.page_size }}
+            }); 
         }); 
-        grid.navGrid('#{{djid_id}}-pager', {
-            'edit': false,
-            'add': false,
-            'del': false,
-            'search': false
-        });
-        grid.filterToolbar();
-        grid.get(0).toggleToolbar();
-        grid.navButtonAdd('#{{djid_id}}-pager', {
-            caption: '',
-            buttonicon: 'ui-icon-search',
-            onClickButton: function () {
-                this.toggleToolbar();
-            }
-        });
-        $("{{meta.djid_id}}").filterGrid = $("{{meta.djid_id}}").filterToolbar;
-    }); 
-})(jQuery);
+    });
+})();
 </script>
