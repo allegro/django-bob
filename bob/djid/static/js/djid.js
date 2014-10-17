@@ -1,6 +1,6 @@
 /* Djid extensions for jqGrid */
 
-define(['jquery', 'jqGrid'], function ($, jqGrid) {
+define(['jquery', 'jqGrid', 'mustache'], function ($, jqGrid, Mustache) {
     $.fn.fmatter.djid_link = function (value) {
         var url, label;
         return Mustache.render(
