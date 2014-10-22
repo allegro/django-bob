@@ -46,7 +46,9 @@ class DjidMeta(type):
                 mount_column(column_name, dict_[column_name])
             else:
                 field = meta.Model._meta.get_field(column_name)
-                mount_column(column_name, registry.get_column(field))
+                mount_column(column_name, registry.get_column(
+                    field, meta.Model
+                ))
 
     def init_from_dict(cls, dict_, mount_column):
         """Mounts the colummns from class dict. Used when no column list

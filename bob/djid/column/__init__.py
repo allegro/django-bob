@@ -1,6 +1,11 @@
 """Column definitions."""
 from django.db.models import Count
-from django.db.models.fields import Field, CharField, DateTimeField
+from django.db.models.fields import (
+    Field,
+    CharField,
+    DateTimeField,
+    IntegerField,
+)
 
 from bob.djid.util import PEP3115
 
@@ -16,11 +21,12 @@ class Column(object):
     """
 
     filtered = False
+    linking_available = True
 
     def __init__(self, label, as_link=False):
         global _counter
         self.label = label
-        self.as_link = as_link
+        self.as_link = as_link and self.linking_available
         if not PEP3115:
             self.counter = _counter
             _counter += 1
@@ -46,12 +52,14 @@ class Column(object):
         """Return the text to be displayed in the cell."""
 
     @classmethod
-    def from_field(cls, field, *args, **kwargs_override):
+    def from_field(cls, field, Model, *args, **kwargs_override):
         call_kwargs = {
             'label': field.verbose_name.capitalize(),
         }
+        if hasattr(Model, 'get_absolute_url'):
+            call_kwargs['as_link'] = True
         call_kwargs.update(kwargs_override)
-        return cls(label=field.verbose_name.capitalize())
+        return cls(**call_kwargs)
 
     def process_queryset(self, qs):
         """The optional function that allows the column to modify the queryset
@@ -102,11 +110,11 @@ class _ColumnRegistry(object):
             )
         self._registered.insert(0, (condition, constructor, args, kwargs))
 
-    def get_column(self, field):
+    def get_column(self, field, Model):
         """Returns a column for a given field."""
         for condition, constructor, args, kwargs in self._registered:
             if condition(field):
-                return constructor(field, *args, **kwargs)
+                return constructor(field, Model, *args, **kwargs)
         raise ValueError("No field matched for {}.".format(field))
 
 registry = _ColumnRegistry()
@@ -132,6 +140,8 @@ registry.register(CharField, CharColumn)
 
 class DateTimeColumn(Column):
     """A column that displays datetime using the jqGrid l10n mechanisms."""
+
+    linking_available = False
 
     def format_label(self, model):
         return getattr(model, self.name).isoformat()
@@ -180,6 +190,7 @@ class IntColumn(Column):
     """Column for integer values."""
 
     filtered = True
+    linking_available = False
 
     def format_label(self, model):
         return getattr(model, self.name)
@@ -204,6 +215,8 @@ class IntColumn(Column):
                     int(value[len(operator):])
                 })
         return qs.filter(**{self.name: int(value)})
+
+registry.register(IntegerField, IntColumn)
 
 
 class CountColumn(IntColumn):
