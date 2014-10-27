@@ -31,7 +31,6 @@ def bob_icon(name, is_white=False):
     return mark_safe('<i class="icon-%s%s"></i>' % esc(name, white))
 
 
-@register.inclusion_tag('bob/main_menu.html')
 def main_menu(items, selected, title=None, search=None, white=False,
               position='', title_url="/"):
     """
@@ -63,6 +62,11 @@ def main_menu(items, selected, title=None, search=None, white=False,
         'title_url': title_url,
         'class': ' '.join(klass),
     }
+
+register.inclusion_tag('bob/main_menu.html')(main_menu)
+register.inclusion_tag(
+    'bob/main_menu_bs3fake.html', name='main_menu_bs3fake'
+)(main_menu)
 
 
 @register.inclusion_tag('bob/dropdown_items.html')
