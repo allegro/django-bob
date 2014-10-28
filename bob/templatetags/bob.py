@@ -90,7 +90,6 @@ def render_cell(column, row):
     return column.render_cell(row)
 
 
-@register.inclusion_tag('bob/tab_menu.html')
 def tab_menu(items, selected, side=None):
     """
     Show a menu in form of tabs.
@@ -106,6 +105,11 @@ def tab_menu(items, selected, side=None):
         'selected': selected,
         'side': side,
     }
+
+register.inclusion_tag('bob/tab_menu.html')(tab_menu)
+register.inclusion_tag(
+    'bob/tab_menu_bs3fake.html', name='tab_menu_bs3fake'
+)(tab_menu)
 
 
 @register.inclusion_tag('bob/sidebar_menu.html')
