@@ -170,3 +170,52 @@ And voilà - you can now see a fully functional grid.
 You can now sort the grid by clicking the column headers. You can scroll it
 and see the pages loaded asynchronously. You can also click the 'magnifying
 glass' icon to show the search options.
+
+
+Related models.
+-------------------------------
+
+Djid will also handle related models. Let's expand our models to contain a
+simple foreign key relation.
+
+.. code-block:: python
+
+    class Person(models.Model):
+        """A person managed by my application."""
+        first_name = models.CharField(max_length=64)
+        last_name = models.CharField(max_length=64)
+        registered = models.DateTimeField()
+        score = models.IntegerField(null=True)
+        company = models.ForeignKey('Company')
+    
+        def get_absolute_url(self):
+            return reverse('person_view', kwargs={'person_id': self.pk})
+
+
+    class Company(models.Model):
+        """Test company object."""
+        name = models.CharField(max_length=64)
+        phone = models.CharField(max_length=64)
+
+        def get_absolute_url(self):
+            return reverse('company_view', kwargs={'company_id': self.pk})
+
+
+You can now include 'company' column in your grid:
+
+.. code-block:: python
+
+    class PersonsGrid(Djid):
+        """A grid displaying persons."""
+    
+        class Meta:
+            djid_id = 'persons'
+            Model = Person
+            columns = [
+                'first_name',
+                'last_name',
+                'registered',
+                'score',
+                'company',
+            ]
+    

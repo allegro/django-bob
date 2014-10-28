@@ -13,27 +13,19 @@ from django.shortcuts import get_object_or_404
 from django.views.generic import TemplateView
 
 
-# class PersonsGrid(Djid):
-# 
-#     class Meta:
-#         djid_id = 'persons'
-#         Model = Person
-# 
-# 
-#     first_name = CharColumn(label='Imię', as_link=True)
-#     last_name = CharColumn(label='Nazwisko', as_link=True)
-#     registered = DateTimeColumn(label='Zarejestrowany')
-#     company = ForeignColumn(label='Firma', label_field='name', as_link=True)
-#     score = IntColumn(label='Punkty')
-
-
 class PersonsGrid(Djid):
     """A grid displaying persons."""
 
     class Meta:
         djid_id = 'persons'
         Model = Person
-        columns = ['first_name', 'last_name', 'registered', 'score']
+        columns = [
+            'first_name',
+            'last_name',
+            'registered',
+            'score',
+            'company',
+        ]
 
 class CompanyGrid(Djid):
     class Meta:

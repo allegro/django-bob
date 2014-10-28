@@ -1,7 +1,8 @@
 """Column definitions."""
-from django.db.models import Count
-from django.db.models.fields import (
+from django.db.models import (
+    Count,
     Field,
+    ForeignKey,
     CharField,
     DateTimeField,
     IntegerField,
@@ -184,6 +185,8 @@ class ForeignColumn(Column):
 
     def process_queryset(self, qs):
         return qs.select_related(self.name)
+
+registry.register(ForeignKey, ForeignColumn)
 
 
 class IntColumn(Column):
