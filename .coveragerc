@@ -1,0 +1,7 @@
+[run]
+branch = True
+
+[report]
+exclude_lines =
+    if PEP3115:
+    def __prepare__

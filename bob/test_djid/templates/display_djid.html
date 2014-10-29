@@ -1,0 +1,51 @@
+{% load djid %}
+<!doctype html>
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" media="screen" href="/static/css/ui.jqgrid.css" />
+		<link rel="stylesheet" type="text/css" media="screen" href="/static/jquery-ui/jquery-ui.css" />
+		<link rel="stylesheet" type="text/css" media="screen" href="/static/plugins/ui.multiselect.css" />
+		 
+		<script type="text/javascript" src="/static/js/require.js"></script>
+        <script type="text/javascript">
+        requirejs.config({
+            baseUrl: '/static/',
+            paths: {
+                'jquery': 'js/jquery',
+                'jquery-ui': 'jquery-ui/jquery-ui.min',
+                'djid': 'js/djid',
+                'mustache': 'js/mustache',
+                'ui.multiselect': 'plugins/ui.multiselect',
+                'jqGrid': 'js/jquery.jqGrid.min',
+                'jqGrid-locale': '/static/js/i18n/grid.locale-pl'
+            },
+            shim: {
+                'ui.multiselect.js': {
+                    'deps': [
+                        'jquery',
+                        'jquery-ui',
+                        'jqGrid-locale'
+                    ]
+                }, 
+                'jqGrid': {
+                    'deps': [
+                        'jquery',
+                        'jquery-ui',
+                        'ui.multiselect',
+                        'jqGrid-locale'
+                    ]
+                },
+                'jqGrid-locale': {
+                    'deps': [
+                        'jquery',
+                        'jquery-ui'
+                    ]
+                },
+            }
+        });
+        </script>
+	</head>
+	<body>
+		{% djid params.djid %}
+	</body>
+</html>

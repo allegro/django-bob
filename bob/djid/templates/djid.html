@@ -1,0 +1,17 @@
+<table id="{{meta.djid_id}}"><tr><td></td></tr></table> 
+<div id="{{meta.djid_id}}-pager"></div>
+ 
+<script type="text/javascript">
+(function () {
+    require(['jquery', 'djid'], function($, Djid) {
+        $(function () {
+            var grid;
+            grid = new Djid.Djid('{{ meta.djid_id }}', {
+                colNames: {{ djid.col_names|safe }},
+                colModel: {{ djid.col_model|safe }},
+                rowNum: {{ djid.page_size }}
+            }); 
+        }); 
+    });
+})();
+</script>

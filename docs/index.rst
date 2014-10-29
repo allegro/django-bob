@@ -14,11 +14,8 @@ Contents:
 .. toctree::
     :maxdepth: 2
 
-    menus
-    icons
-    forms
-    views
-    utils
+    djid_tutorial
+    api
 
 
 Indices and tables
