@@ -1,0 +1,8 @@
+<ul class="nav nav-tabs nav-submenu bs3fake">
+    {% for item in items %}
+        <li class="
+        {% if item.name == selected %}active{% endif %}
+        ">
+        <a href="{{ item.get_href }}">{{ item.label }}</a>
+    {% endfor %}
+</ul>
