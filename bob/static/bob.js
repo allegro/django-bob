@@ -1,7 +1,9 @@
-/*jslint unparam: true */
-/*global jQuery: false */
-var djangoBobConditions = function ($) {
-    var checkCondition;
+/*jslint unparam: true*/
+/*global define*/
+
+define(['jquery', 'bootstrap', 'bootstrap-datepicker'], function ($) {
+    "use strict";
+    var conditions;
 
     function leadZeros(value, len) {
         var s = String(value);
@@ -33,17 +35,17 @@ var djangoBobConditions = function ($) {
         }
     }
 
-    var conditions = {
+    conditions = {
         // declare own condition functions here and
         // in bob.forms.dependency_conditions
-        any: function(value, conditionArgs) {
+        any: function (value, conditionArgs) {
             return true;
         },
-        exact: function(value, conditionArgs) {
+        exact: function (value, conditionArgs) {
             // we can assert, that values are string serializable
             return JSON.stringify(formatValue(value)) == JSON.stringify(conditionArgs[0]);
         },
-        memberOf: function(value, conditionArgs) {
+        memberOf: function (value, conditionArgs) {
             return conditionArgs[0].indexOf(formatValue(value)) !== -1;
         },
         notEmpty: function (value, conditionArgs) {
@@ -53,30 +55,19 @@ var djangoBobConditions = function ($) {
         }
     };
 
-    met = function(value, condition) {
+
+    function met(value, condition) {
         var conditionFunc = conditions[condition[0]];
         if (typeof conditionFunc === "undefined") {
             console.error("Condition '" + condition[0] + "' is not defined.");
         } else {
             return conditionFunc(value, condition.slice(1));
         }
-    };
+    }
 
-    return {
-        met: met
-    };
-}(jQuery);
-
-
-var djangoBob = function ($) {
-    'use strict';
-    var bindAjaxUpdate,
-        bindDependencies,
-        setFieldValue;
-
-    setFieldValue = function (field, value) {
+    function setFieldValue(field, value) {
         var $field = $(field);
-        if (value == null) {
+        if (value === null) {
             return;
         }
         if ($field.attr('type') == "checkbox") {
@@ -84,14 +75,14 @@ var djangoBob = function ($) {
         } else if ($.isArray(value) && $field.is('select')) {
             $field.children().remove();
             $.each(value[1], function(i, el) {
-                $field.append($('<option></option>').val(el[0]).html(el[1]))
+                $field.append($('<option></option>').val(el[0]).html(el[1]));
             });
             $field.val(value[0]);
         } else {
             $field.val(value);
         }
         $field.trigger("change");
-    };
+    }
 
     function pageLoadCondition(pageLoadUpdate, e) {
         // returns false if and only if this is page load event and code
@@ -100,7 +91,7 @@ var djangoBob = function ($) {
         return pageLoadUpdate || !e.pageLoad;
     }
 
-    bindAjaxUpdate = function (master, slave, condition, options) {
+    function bindAjaxUpdate(master, slave, condition, options) {
         var slavesName = "dependencySlaves";
         var slaveDescription = {
             field: slave,
@@ -118,7 +109,7 @@ var djangoBob = function ($) {
                     slaveObj;
                 for (var i = 0; i < slavesNamesLength; i++) {
                     slaveObj = slavesNames[i];
-                    if (djangoBobConditions.met(master.val(), slaveObj.condition)) {
+                    if (met(master.val(), slaveObj.condition)) {
                         if (pageLoadCondition(
                                 slaveObj.pageLoadUpdate, ev)) {
                             passedSlaves.push(slaveObj);
@@ -165,9 +156,9 @@ var djangoBob = function ($) {
         } else {
             master.data(slavesName).push(slaveDescription);
         }
-    };
+    }
 
-    bindDependencies = function (form, dependencies) {
+    function bindDependencies(form, dependencies) {
         $.each(dependencies, function (i, dep) {
             var masters = $('[id$="-' + dep.master + '"]').add('#id_' + dep.master);
             $.each(masters, function (j, master) {
@@ -175,13 +166,13 @@ var djangoBob = function ($) {
                 var slave, slaveCtrl, prefix;
                 prefix = master.attr('id').slice(0, -dep.master.length);
                 slave = $('#' + prefix + dep.slave);
-                if (slave.length == 0) {
+                if (slave.length === 0) {
                     slave = $('[name="' + dep.slave + '"]');
                 }
                 slaveCtrl = slave.parents('.control-group');
                 if (dep.action === "REQUIRE") {
                     master.change(function () {
-                        if (djangoBobConditions.met(master.val(), dep.condition)) {
+                        if (met(master.val(), dep.condition)) {
                             $(slaveCtrl).find('label').addClass('required');
                         } else {
                             $(slaveCtrl).find('label').removeClass('required');
@@ -189,7 +180,7 @@ var djangoBob = function ($) {
                     });
                 } else if (dep.action === "SHOW") {
                     master.change(function () {
-                        if (djangoBobConditions.met(master.val(), dep.condition)) {
+                        if (met(master.val(), dep.condition)) {
                             slave.removeAttr('disabled');
                             slaveCtrl.show();
                         } else {
@@ -200,7 +191,7 @@ var djangoBob = function ($) {
                 } else if (dep.action === "CLONE") {
                     master.change(function (ev) {
                         if (pageLoadCondition(dep.options.page_load_update, ev)) {
-                            if (djangoBobConditions.met(master.val(), dep.condition)) {
+                            if (met(master.val(), dep.condition)) {
                                 slave.val(master.val()).trigger({
                                     type: 'change',
                                     cloneSource: master
@@ -217,47 +208,49 @@ var djangoBob = function ($) {
                 });
             });
         });
-    };
+    }
+
+    function initialize() {
+        $('.bob-select-all').click(function () {
+            var table = $(this).closest('table');
+            table.find('input[name="select"]').prop('checked', true);
+            table.find('input[name="items"]').prop('checked', true);
+        });
+        $('.bob-select-none').click(function () {
+            var table = $(this).closest('table');
+            table.find('input[name="select"]').prop('checked', false);
+            table.find('input[name="items"]').prop('checked', false);
+            table.find('input[name="selectall"]').prop('checked', false);
+        });
+        $('.bob-select-toggle').click(function () {
+            var table = $(this).closest('table');
+            table.find('input[name="select"]').each(function () {
+                this.checked = !this.checked;
+            });
+            table.find('input[name="items"]').each(function () {
+                this.checked = !this.checked;
+            });
+            table.find('input[name="selectall"]').prop('checked', false);
+        });
+        $('.datepicker').datepicker({autoclose: true}).click(function () {
+            $('input.datepicker').not(this).datepicker('hide');
+        });
+        $.each($('form'), function (i, form) {
+            if (form.dataset.bobDependencies !== undefined) {
+                bindDependencies(
+                    form,
+                    $.parseJSON(form.dataset.bobDependencies)
+                );
+            }
+        });
+        $('.help-tooltip').tooltip();
+    }
 
     return {
+        met: met,
         bindAjaxUpdate: bindAjaxUpdate,
         setFieldValue: setFieldValue,
-        bindDependencies: bindDependencies
+        bindDependencies: bindDependencies,
+        initialize: initialize
     };
-}(jQuery);
-
-$(document).ready(function () {
-    $('.bob-select-all').click(function () {
-        var table = $(this).closest('table');
-        table.find('input[name="select"]').prop('checked', true);
-        table.find('input[name="items"]').prop('checked', true);
-    });
-    $('.bob-select-none').click(function () {
-        var table = $(this).closest('table');
-        table.find('input[name="select"]').prop('checked', false);
-        table.find('input[name="items"]').prop('checked', false);
-        table.find('input[name="selectall"]').prop('checked', false);
-    });
-    $('.bob-select-toggle').click(function () {
-        var table = $(this).closest('table');
-        table.find('input[name="select"]').each(function () {
-            this.checked = !this.checked;
-        });
-        table.find('input[name="items"]').each(function () {
-            this.checked = !this.checked;
-        });
-        table.find('input[name="selectall"]').prop('checked', false);
-    });
-    $('.datepicker').datepicker({autoclose: true}).click(function () {
-        $('input.datepicker').not(this).datepicker('hide');
-    });
-    $.each($('form'), function (i, form) {
-        if (form.dataset.bobDependencies !== undefined) {
-            djangoBob.bindDependencies(
-                form,
-                $.parseJSON(form.dataset.bobDependencies)
-            );
-        }
-    });
-    $('.help-tooltip').tooltip();
 });
