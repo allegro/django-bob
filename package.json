@@ -1,0 +1,19 @@
+{
+  "name": "django-bob",
+  "version": "1.10.0",
+  "main": "Gruntfile.js",
+  "devDependencies": {
+    "grunt-template-jasmine-requirejs": "~0.2.0"
+  },
+  "scripts": {
+    "test": "jasmine"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/allegro/django-bob.git"
+  },
+  "author": "",
+  "bugs": {
+    "url": "https://github.com/allegro/django-bob/issues"
+  }
+}
