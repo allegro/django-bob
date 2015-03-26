@@ -14,13 +14,19 @@
 {% endfor %}
 <div class="form-actions">
     {% spaceless %}
-    <button type="submit" class="btn btn-primary"><i
-        {% if fugue_icons %}
-        class="fugue-icon fugue-tick"
-        {% else %}
-        class="icon-ok icon-white"
+    <button type="submit" class="btn btn-primary"
+        {% if submit_name %}
+        name={{ submit_name }}
         {% endif %}
-        ></i>&nbsp;{{submit_label}}</button>
+    >
+        <i
+            {% if fugue_icons %}
+            class="fugue-icon fugue-tick"
+            {% else %}
+            class="icon-ok icon-white"
+            {% endif %}
+        ></i>&nbsp;{{ submit_label }}
+    </button>
     {% endspaceless %}
 </div>
 </form>
