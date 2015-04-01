@@ -5,6 +5,7 @@
         {% if item.name == selected %}active{% endif %}
         {{ class_prefix|default:'menu-item' }}-{{ item.name|slugify }}
         ">
-        <a href="{{ item.get_href }}">{{ item.label }}</a>
+            <a href="{{ item.get_href }}">{{ item.label }}</a>
+        </li>
     {% endfor %}
 </ul>
