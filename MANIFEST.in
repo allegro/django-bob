@@ -1,2 +1,3 @@
+recursive-include bob/djid/templates *
 recursive-include bob/templates *
 recursive-include bob/static *

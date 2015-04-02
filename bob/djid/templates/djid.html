@@ -1,0 +1,16 @@
+<table id="{{ meta.djid_id }}" class="djid"><tr><td></td></tr></table>
+<div id="{{ meta.djid_id }}-pager"></div>
+
+<script type="text/javascript">
+(function () {
+    require(['jquery', 'djid'], function($, Djid) {
+        $(function () {
+            var grid;
+            grid = new Djid.Djid(
+                '{{ meta.djid_id }}',
+                {{ djid.get_params|safe }}
+            );
+        });
+    });
+})();
+</script>

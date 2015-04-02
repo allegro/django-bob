@@ -1,0 +1,6 @@
+db.sqlite
+bob/test_djid/static/
+htmlcov
+*.pyc
+*.egg-info
+docs/_build

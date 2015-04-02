@@ -15,6 +15,12 @@ that make it easier to use the Twitter's Bootstrap framework with Django.
     keywords='bootstrap django css html',
     packages=find_packages(),
     install_requires=['distribute', 'django'],
+    extras_require = {
+        'reports': [
+            'django-rq>=0.4.5',
+            'rq>=0.3.7',
+        ]
+    },
     platforms='any',
     include_package_data=True,
     zip_safe=False,
