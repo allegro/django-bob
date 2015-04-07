@@ -16,6 +16,7 @@ import rq
 from django.conf.urls import patterns, url
 from django.core.paginator import Paginator
 from django.http import HttpResponse
+from django.conf import settings
 
 from bob.djid.column import Column, registry
 from bob.djid.util import PEP3115
@@ -29,12 +30,11 @@ class DjidMeta(type):
     """A djid metaclass."""
 
     __registry__ = {}
-    queue_name = 'djid_reports'
-    try:
-        queue = django_rq.get_queue('djid_reports')
-        connection = django_rq.get_connection(queue_name)
-    except KeyError:
-        queue = connection = None
+    queue_name = (
+        'djid_reports' if 'djid_reports' in settings.RQ_QUEUES else 'default'
+    )
+    queue = django_rq.get_queue(queue_name)
+    connection = django_rq.get_connection(queue_name)
 
     def __init__(cls, clsname, bases, dict_):
         column_dict = collections.OrderedDict()
