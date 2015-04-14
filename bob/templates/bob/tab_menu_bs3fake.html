@@ -1,0 +1,11 @@
+{%load bob %}
+<ul class="nav nav-tabs nav-submenu bs3fake">
+    {% for item in items %}
+        <li class="
+        {% if item.name == selected %}active{% endif %}
+        {{ class_prefix|default:'menu-item' }}-{{ item.name|slugify }}
+        ">
+            <a href="{{ item.get_href }}">{{ item.label }}</a>
+        </li>
+    {% endfor %}
+</ul>

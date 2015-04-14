@@ -31,7 +31,6 @@ def bob_icon(name, is_white=False):
     return mark_safe('<i class="icon-%s%s"></i>' % esc(name, white))
 
 
-@register.inclusion_tag('bob/main_menu.html')
 def main_menu(items, selected, title=None, search=None, white=False,
               position='', title_url="/"):
     """
@@ -64,6 +63,11 @@ def main_menu(items, selected, title=None, search=None, white=False,
         'class': ' '.join(klass),
     }
 
+register.inclusion_tag('bob/main_menu.html')(main_menu)
+register.inclusion_tag(
+    'bob/main_menu_bs3fake.html', name='main_menu_bs3fake'
+)(main_menu)
+
 
 @register.inclusion_tag('bob/dropdown_items.html')
 def dropdown_items(items, white=False):
@@ -86,7 +90,6 @@ def render_cell(column, row):
     return column.render_cell(row)
 
 
-@register.inclusion_tag('bob/tab_menu.html')
 def tab_menu(items, selected, side=None):
     """
     Show a menu in form of tabs.
@@ -102,6 +105,11 @@ def tab_menu(items, selected, side=None):
         'selected': selected,
         'side': side,
     }
+
+register.inclusion_tag('bob/tab_menu.html')(tab_menu)
+register.inclusion_tag(
+    'bob/tab_menu_bs3fake.html', name='tab_menu_bs3fake'
+)(tab_menu)
 
 
 @register.inclusion_tag('bob/sidebar_menu.html')
@@ -251,8 +259,11 @@ def timesince_limited(d):
 
 
 @register.inclusion_tag('bob/form.html')
-def form(form, action="", method="POST", fugue_icons=False,
-         css_class="form-horizontal", title="", submit_label='Save'):
+def form(
+    form, action="", method="POST", fugue_icons=False,
+    css_class="form-horizontal", title="", submit_label='Save',
+    submit_name=None,
+):
     """
     Render a form.
 
@@ -263,9 +274,11 @@ def form(form, action="", method="POST", fugue_icons=False,
     :param css_class: The CSS class to use for the ``<form>`` tag.
     :param title: Form title.
     :param submit_label: Submit button label.
+    :param submit_name: Submit button name.
     """
     return {
         'form': form,
+        'submit_name': submit_name,
         'action': action,
         'title': title,
         'method': method,
