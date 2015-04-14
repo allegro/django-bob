@@ -1,6 +1,15 @@
 Change Log
 ----------
 
+1.11
+~~~~
+Released on April 13, 2015
+
+* Added classes in tab_menu
+* Added responsive bootstrap 2.x file for the mobiles
+* Added new param. submit_name to tag form
+
+
 1.9.1
 ~~~~~
 Released on October 1, 2014,
