@@ -48,7 +48,7 @@ class Column(object):
     def format_ajax_value(self, model):
         """Returns a value to be sent via AJAX. It should be an object dumpable
         to JSON."""
-        if self.as_link:
+        if self.as_link and model and hasattr(model, 'get_absolute_url'):
             return (model.get_absolute_url(), self.format_label(model))
         else:
             return self.format_label(model)
