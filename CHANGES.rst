@@ -1,8 +1,17 @@
 Change Log
 ----------
 
-1.11
-~~~~
+1.12.0
+~~~~~~
+Released on April 23, 2015
+
+* The new bob.djid module is added.
+* Existing modules are modified to use require.js.
+* Tests of existing js modules are done via jasmine.
+
+
+1.11.0
+~~~~~~
 Released on April 13, 2015
 
 * Added classes in tab_menu
