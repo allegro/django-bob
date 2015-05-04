@@ -51,7 +51,7 @@ ul.bs3fake {
 }
 
 .bs3fake .active a {
-    background-color: #3c8dbc;
+    background-color: #78D725;
     color: #fff;
     cursor: pointer;
 }
@@ -67,11 +67,11 @@ a {
 
 ul.bs3fake.nav-submenu {
     top: 40px;
-    background-color: #3c8dbc;
+    background-color: #78D725;
 }
 
 ul.bs3fake.nav-submenu li {
-    background-color: #3c8dbc;
+    background-color: #78D725;
 }
 
 ul.bs3fake.nav-submenu li a {
