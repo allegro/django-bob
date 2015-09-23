@@ -84,7 +84,7 @@ class UnicodeWriter:
             self.writerow(row)
 
 
-def make_csv_response(data=[], filename='export.csv', encoding='cp1250'):
+def make_csv_response(data=None, filename='export.csv', encoding='utf-8-sig'):
     """
     Create a HTTP response for downloading a CSV file with provided data.
 
@@ -99,7 +99,7 @@ def make_csv_response(data=[], filename='export.csv', encoding='cp1250'):
     ...]
     >>> response = make_csv_response(data=rows, filename='myfile.csv')
     """
-
+    data = data or []
     f = cStringIO.StringIO()
     UnicodeWriter(f, encoding=encoding).writerows(
         (unicode(item) for item in row) for row in data
